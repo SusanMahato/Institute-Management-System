@@ -1,0 +1,25 @@
+﻿services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: odoo
+      POSTGRES_USER: odoo
+    volumes: [postgres_data:/var/lib/postgresql/data]
+
+  odoo:
+    image: odoo:19.0
+    depends_on: [postgres]
+    ports: ["8069:8069"]
+    environment:
+      HOST: postgres
+      USER: odoo
+      PASSWORD: odoo
+    volumes:
+      - odoo_data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons
+    command: ["--addons-path=/mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons"]
+
+volumes:
+  postgres_data:
+  odoo_data:

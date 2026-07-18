@@ -1,0 +1,40 @@
+<odoo>
+    <record id="view_institute_course_list" model="ir.ui.view">
+        <field name="name">institute.course.list</field>
+        <field name="model">institute.course</field>
+        <field name="arch" type="xml">
+            <list><field name="name"/></list>
+        </field>
+    </record>
+
+    <record id="view_institute_course_form" model="ir.ui.view">
+        <field name="name">institute.course.form</field>
+        <field name="model">institute.course</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="name"/>
+                    <notebook>
+                        <page string="Subjects">
+                            <field name="subject_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_institute_course" model="ir.actions.act_window">
+        <field name="name">Courses</field>
+        <field name="res_model">institute.course</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_institute_root" name="Institute Management"/>
+    <menuitem id="menu_institute_curriculum" name="Curriculum" parent="menu_institute_root"/>
+    <menuitem id="menu_institute_course" name="Courses" parent="menu_institute_curriculum" action="action_institute_course"/>
+</odoo>
