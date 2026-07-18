@@ -7,6 +7,8 @@
     'data': [
         'security/ir.model.access.csv',
         'views/curriculum_views.xml',
+        'views/room_views.xml',
+        'views/teacher_views.xml',
     ],
     'installable': True,
     'application': True,

@@ -1,0 +1,18 @@
+<odoo>
+    <record id="view_employee_form_institute_inherit" model="ir.ui.view">
+        <field name="name">hr.employee.form.institute.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Teaching Profile">
+                    <group>
+                        <field name="subject_ids" widget="many2many_tags"/>
+                        <field name="preferred_mode"/>
+                        <field name="maximum_weekly_workload"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>
