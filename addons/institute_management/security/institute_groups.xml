@@ -1,0 +1,14 @@
+<odoo>
+    <record id="group_institute_teacher" model="res.groups">
+        <field name="name">Institute: Teacher</field>
+    </record>
+
+    <record id="group_institute_coordinator" model="res.groups">
+        <field name="name">Institute: Coordinator</field>
+        <field name="implied_ids" eval="[(4, ref('group_institute_teacher'))]"/>
+    </record>
+
+    <record id="group_institute_student" model="res.groups">
+        <field name="name">Institute: Student</field>
+    </record>
+</odoo>

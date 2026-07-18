@@ -1,6 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_institute_course,institute.course,model_institute_course,base.group_user,1,1,1,1
-access_institute_subject,institute.subject,model_institute_subject,base.group_user,1,1,1,1
-access_institute_chapter,institute.chapter,model_institute_chapter,base.group_user,1,1,1,1
-access_institute_topic,institute.topic,model_institute_topic,base.group_user,1,1,1,1
-access_institute_room,institute.room,model_institute_room,base.group_user,1,1,1,1
+access_institute_course_coordinator,institute.course,model_institute_course,group_institute_coordinator,1,1,1,1
+access_institute_course_teacher,institute.course,model_institute_course,group_institute_teacher,1,0,0,0
+access_institute_subject_coordinator,institute.subject,model_institute_subject,group_institute_coordinator,1,1,1,1
+access_institute_subject_teacher,institute.subject,model_institute_subject,group_institute_teacher,1,0,0,0
+access_institute_chapter_coordinator,institute.chapter,model_institute_chapter,group_institute_coordinator,1,1,1,1
+access_institute_topic_coordinator,institute.topic,model_institute_topic,group_institute_coordinator,1,1,1,1
+access_institute_room_coordinator,institute.room,model_institute_room,group_institute_coordinator,1,1,1,1
+access_institute_batch_coordinator,institute.batch,model_institute_batch,group_institute_coordinator,1,1,1,1
+access_institute_batch_teacher,institute.batch,model_institute_batch,group_institute_teacher,1,0,0,0
