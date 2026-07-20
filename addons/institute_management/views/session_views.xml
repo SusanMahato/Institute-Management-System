@@ -1,0 +1,48 @@
+<odoo>
+    <record id="view_institute_session_list" model="ir.ui.view">
+        <field name="name">institute.class.session.list</field>
+        <field name="model">institute.class.session</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="topic_id"/>
+                <field name="teacher_id"/>
+                <field name="room_id"/>
+                <field name="batch_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_institute_session_form" model="ir.ui.view">
+        <field name="name">institute.class.session.form</field>
+        <field name="model">institute.class.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="topic_id"/>
+                        <field name="course_id" readonly="1"/>
+                        <field name="subject_id" readonly="1"/>
+                        <field name="teacher_id"/>
+                        <field name="room_id"/>
+                        <field name="batch_id"/>
+                        <field name="start_datetime"/>
+                        <field name="end_datetime"/>
+                        <field name="state"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_institute_session" model="ir.actions.act_window">
+        <field name="name">Class Sessions</field>
+        <field name="res_model">institute.class.session</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_institute_scheduling" name="Scheduling" parent="menu_institute_root"/>
+    <menuitem id="menu_institute_session" name="Class Sessions" parent="menu_institute_scheduling" action="action_institute_session"/>
+</odoo>

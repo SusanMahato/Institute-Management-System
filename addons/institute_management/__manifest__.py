@@ -11,6 +11,7 @@
         'views/room_views.xml',
         'views/teacher_views.xml',
         'views/batch_views.xml',
+        'views/session_views.xml',
     ],
     'demo': [
         'data/demo.xml',
