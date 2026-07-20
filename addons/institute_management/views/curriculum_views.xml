@@ -34,7 +34,115 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    <!-- Subject -->
+    <record id="view_institute_subject_list" model="ir.ui.view">
+        <field name="name">institute.subject.list</field>
+        <field name="model">institute.subject</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="course_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_institute_subject_form" model="ir.ui.view">
+        <field name="name">institute.subject.form</field>
+        <field name="model">institute.subject</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="course_id"/>
+                    </group>
+                    <notebook>
+                        <page string="Chapters">
+                            <field name="chapter_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_institute_subject" model="ir.actions.act_window">
+        <field name="name">Subjects</field>
+        <field name="res_model">institute.subject</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Chapter -->
+    <record id="view_institute_chapter_list" model="ir.ui.view">
+        <field name="name">institute.chapter.list</field>
+        <field name="model">institute.chapter</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="subject_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_institute_chapter_form" model="ir.ui.view">
+        <field name="name">institute.chapter.form</field>
+        <field name="model">institute.chapter</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="subject_id"/>
+                    </group>
+                    <notebook>
+                        <page string="Topics">
+                            <field name="topic_ids">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="standard_class_count"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_institute_chapter" model="ir.actions.act_window">
+        <field name="name">Chapters</field>
+        <field name="res_model">institute.chapter</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Topic -->
+    <record id="view_institute_topic_list" model="ir.ui.view">
+        <field name="name">institute.topic.list</field>
+        <field name="model">institute.topic</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="chapter_id"/>
+                <field name="standard_class_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_institute_topic" model="ir.actions.act_window">
+        <field name="name">Topics</field>
+        <field name="res_model">institute.topic</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu items -->
     <menuitem id="menu_institute_root" name="Institute Management"/>
     <menuitem id="menu_institute_curriculum" name="Curriculum" parent="menu_institute_root"/>
     <menuitem id="menu_institute_course" name="Courses" parent="menu_institute_curriculum" action="action_institute_course"/>
+    <menuitem id="menu_institute_subject" name="Subjects" parent="menu_institute_curriculum" action="action_institute_subject"/>
+    <menuitem id="menu_institute_chapter" name="Chapters" parent="menu_institute_curriculum" action="action_institute_chapter"/>
+    <menuitem id="menu_institute_topic" name="Topics" parent="menu_institute_curriculum" action="action_institute_topic"/>
 </odoo>

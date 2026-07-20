@@ -1,0 +1,35 @@
+<odoo noupdate="1">
+    <record id="demo_course_physics" model="institute.course">
+        <field name="name">Physics</field>
+    </record>
+    <record id="demo_subject_mechanics" model="institute.subject">
+        <field name="name">Mechanics</field>
+        <field name="course_id" ref="demo_course_physics"/>
+    </record>
+    <record id="demo_chapter_motion" model="institute.chapter">
+        <field name="name">Laws of Motion</field>
+        <field name="subject_id" ref="demo_subject_mechanics"/>
+    </record>
+    <record id="demo_topic_newton1" model="institute.topic">
+        <field name="name">Newton's First Law</field>
+        <field name="chapter_id" ref="demo_chapter_motion"/>
+        <field name="standard_class_count">2</field>
+    </record>
+
+    <record id="demo_room_101" model="institute.room">
+        <field name="name">Room 101</field>
+        <field name="building">Main Block</field>
+        <field name="floor">1</field>
+        <field name="capacity">40</field>
+    </record>
+    <record id="demo_room_virtual" model="institute.room">
+        <field name="name">Virtual Room A</field>
+        <field name="is_virtual">True</field>
+        <field name="meeting_link">https://meet.example.com/room-a</field>
+    </record>
+
+    <record id="demo_batch_physics_a" model="institute.batch">
+        <field name="name">Physics Batch A</field>
+        <field name="course_id" ref="demo_course_physics"/>
+    </record>
+</odoo>

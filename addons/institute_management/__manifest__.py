@@ -12,6 +12,9 @@
         'views/teacher_views.xml',
         'views/batch_views.xml',
     ],
+    'demo': [
+        'data/demo.xml',
+    ],
     'installable': True,
     'application': True,
 }
