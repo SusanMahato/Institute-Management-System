@@ -9,3 +9,4 @@ class InstituteBatch(models.Model):
     course_id = fields.Many2one('institute.course', required=True)
     student_ids = fields.Many2many('res.partner', string='Students')
     active = fields.Boolean(default=True)
+    

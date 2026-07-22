@@ -81,3 +81,4 @@ class HrEmployee(models.Model):
             key=lambda t: (t._current_weekly_workload(), t._sessions_today_count(), t.name or '')
         )
         return ranked
+    

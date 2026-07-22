@@ -32,12 +32,31 @@
         </field>
     </record>
 
+    <record id="view_institute_room_kanban" model="ir.ui.view">
+        <field name="name">institute.room.kanban.floorplan</field>
+        <field name="model">institute.room</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="floorplan_status"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="oe_kanban_card p-3 {{record.floorplan_status.raw_value == 'green' ? 'bg-success' : record.floorplan_status.raw_value == 'yellow' ? 'bg-warning' : record.floorplan_status.raw_value == 'red' ? 'bg-danger' : 'bg-light'}}">
+                            <strong><field name="name"/></strong>
+                            <div><field name="building"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
     <record id="action_institute_room" model="ir.actions.act_window">
         <field name="name">Rooms</field>
         <field name="res_model">institute.room</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">kanban,list,form</field>
     </record>
 
     <menuitem id="menu_institute_infrastructure" name="Infrastructure" parent="menu_institute_root"/>
     <menuitem id="menu_institute_room" name="Rooms" parent="menu_institute_infrastructure" action="action_institute_room"/>
+    <menuitem id="menu_institute_floorplan" name="Live Floorplan" parent="menu_institute_scheduling" action="action_institute_room"/>
 </odoo>

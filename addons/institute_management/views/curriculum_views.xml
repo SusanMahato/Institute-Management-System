@@ -145,4 +145,27 @@
     <menuitem id="menu_institute_subject" name="Subjects" parent="menu_institute_curriculum" action="action_institute_subject"/>
     <menuitem id="menu_institute_chapter" name="Chapters" parent="menu_institute_curriculum" action="action_institute_chapter"/>
     <menuitem id="menu_institute_topic" name="Topics" parent="menu_institute_curriculum" action="action_institute_topic"/>
+
+    <record id="view_institute_topic_pending_list" model="ir.ui.view">
+        <field name="name">institute.topic.pending.list</field>
+        <field name="model">institute.topic</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="chapter_id"/>
+                <field name="standard_class_count"/>
+                <field name="session_count"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_institute_pending_queue" model="ir.actions.act_window">
+        <field name="name">Pending Queue</field>
+        <field name="res_model">institute.topic</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_institute_topic_pending_list"/>
+        <field name="domain">[('session_count', '=', 0)]</field>
+    </record>
+
+    <menuitem id="menu_institute_pending_queue" name="Pending Queue" parent="menu_institute_scheduling" action="action_institute_pending_queue" sequence="5"/>
 </odoo>

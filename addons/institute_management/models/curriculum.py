@@ -1,4 +1,4 @@
-from odoo import models, fields
+from odoo import models, fields, api
 
 
 class InstituteCourse(models.Model):
@@ -38,3 +38,13 @@ class InstituteTopic(models.Model):
         string='Standard Class Count', default=1,
         help='Number of class sessions this topic normally requires'
     )
+    session_ids = fields.One2many('institute.class.session', 'topic_id', string='Sessions')
+    session_count = fields.Integer(
+        compute='_compute_session_count', store=True, string='Scheduled Sessions'
+    )
+
+    @api.depends('session_ids.state')
+    def _compute_session_count(self):
+        for topic in self:
+            topic.session_count = len(topic.session_ids.filtered(lambda s: s.state != 'cancelled'))
+            

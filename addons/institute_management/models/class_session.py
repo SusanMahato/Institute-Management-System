@@ -69,3 +69,4 @@ class InstituteClassSession(models.Model):
                     f"Teacher {session.teacher_id.name} is not qualified to teach "
                     f"{session.subject_id.name}."
                 )
+                
