@@ -25,6 +25,19 @@ class InstituteClassSession(models.Model):
         ('cancelled', 'Cancelled'),
     ], default='scheduled', required=True)
 
+    original_teacher_id = fields.Many2one('hr.employee', string='Original Teacher', readonly=True)
+
+    def action_mark_unavailable(self):
+        for session in self:
+            if session.state != 'scheduled':
+                raise ValidationError(
+                    "Only a scheduled session can be marked as needing a substitute."
+                )
+            session.write({
+                'state': 'needs_substitute',
+                'original_teacher_id': session.teacher_id.id,
+            })
+
     @api.constrains('teacher_id', 'start_datetime', 'end_datetime', 'state')
     def _check_teacher_overlap(self):
         for session in self:

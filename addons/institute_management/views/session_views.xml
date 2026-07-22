@@ -81,4 +81,30 @@
 
     <menuitem id="menu_institute_scheduling" name="Scheduling" parent="menu_institute_root"/>
     <menuitem id="menu_institute_session" name="Class Sessions" parent="menu_institute_scheduling" action="action_institute_session"/>
+    <record id="view_institute_session_form" model="ir.ui.view">
+        <field name="name">institute.class.session.form</field>
+        <field name="model">institute.class.session</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_mark_unavailable" type="object" string="Mark Unavailable (SOS)"
+                            class="btn-danger" invisible="state != 'scheduled'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="topic_id"/>
+                        <field name="course_id" readonly="1"/>
+                        <field name="subject_id" readonly="1"/>
+                        <field name="teacher_id"/>
+                        <field name="original_teacher_id" invisible="not original_teacher_id"/>
+                        <field name="room_id"/>
+                        <field name="batch_id"/>
+                        <field name="start_datetime"/>
+                        <field name="end_datetime"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
 </odoo>
