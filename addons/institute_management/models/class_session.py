@@ -83,3 +83,16 @@ class InstituteClassSession(models.Model):
                     f"{session.subject_id.name}."
                 )
                 
+    def get_substitute_candidates(self):
+        """Return ranked, qualified, available substitute teachers for this
+        session, excluding the currently/originally assigned teacher."""
+        self.ensure_one()
+        Employee = self.env['hr.employee']
+        exclude_id = self.original_teacher_id.id or self.teacher_id.id
+        return Employee.find_available_substitutes(
+            self.subject_id.id,
+            self.start_datetime,
+            self.end_datetime,
+            exclude_teacher_id=exclude_id,
+        )
+        
