@@ -89,6 +89,8 @@
                 <header>
                     <button name="action_mark_unavailable" type="object" string="Mark Unavailable (SOS)"
                             class="btn-danger" invisible="state != 'scheduled'"/>
+                    <button name="action_open_substitute_wizard" type="object" string="Find Substitute"
+                            class="btn-primary" invisible="state != 'needs_substitute'"/>
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>
@@ -104,6 +106,7 @@
                         <field name="end_datetime"/>
                     </group>
                 </sheet>
+                <chatter/>
             </form>
         </field>
     </record>

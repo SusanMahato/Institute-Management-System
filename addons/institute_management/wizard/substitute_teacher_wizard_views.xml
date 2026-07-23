@@ -1,0 +1,20 @@
+<odoo>
+    <record id="view_substitute_teacher_wizard_form" model="ir.ui.view">
+        <field name="name">institute.substitute.teacher.wizard.form</field>
+        <field name="model">institute.substitute.teacher.wizard</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="session_id" readonly="1"/>
+                    <field name="candidate_ids" widget="many2many_tags" readonly="1"/>
+                    <field name="substitute_teacher_id" domain="[('id', 'in', candidate_ids)]"/>
+                    <field name="reason"/>
+                </group>
+                <footer>
+                    <button name="action_confirm" type="object" string="Confirm Substitute" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

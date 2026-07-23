@@ -12,6 +12,7 @@
         'views/teacher_views.xml',
         'views/batch_views.xml',
         'views/session_views.xml',
+        'wizard/substitute_teacher_wizard_views.xml',
     ],
     'demo': [
         'data/demo.xml',

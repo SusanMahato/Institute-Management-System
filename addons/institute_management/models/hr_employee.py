@@ -80,5 +80,5 @@ class HrEmployee(models.Model):
             qualified_available,
             key=lambda t: (t._current_weekly_workload(), t._sessions_today_count(), t.name or '')
         )
-        return ranked
+        return self.browse([t.id for t in ranked])
     

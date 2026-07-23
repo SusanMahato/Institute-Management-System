@@ -4,9 +4,10 @@ from odoo.exceptions import ValidationError
 
 class InstituteClassSession(models.Model):
     _name = 'institute.class.session'
+    _inherit = ['mail.thread']
     _description = 'Class Session'
 
-    teacher_id = fields.Many2one('hr.employee', required=True, string='Teacher')
+    teacher_id = fields.Many2one('hr.employee', required=True, string='Teacher', tracking=True)
     room_id = fields.Many2one('institute.room', required=True)
     batch_id = fields.Many2one('institute.batch', required=True)
     topic_id = fields.Many2one('institute.topic', required=True)
@@ -23,7 +24,7 @@ class InstituteClassSession(models.Model):
         ('needs_substitute', 'Needs Substitute'),
         ('substituted', 'Substituted'),
         ('cancelled', 'Cancelled'),
-    ], default='scheduled', required=True)
+    ], default='scheduled', required=True, tracking=True)
 
     original_teacher_id = fields.Many2one('hr.employee', string='Original Teacher', readonly=True)
 
@@ -37,6 +38,30 @@ class InstituteClassSession(models.Model):
                 'state': 'needs_substitute',
                 'original_teacher_id': session.teacher_id.id,
             })
+
+    def action_open_substitute_wizard(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Assign Substitute',
+            'res_model': 'institute.substitute.teacher.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {'default_session_id': self.id},
+        }
+
+    def get_substitute_candidates(self):
+        """Return ranked, qualified, available substitute teachers for this
+        session, excluding the currently/originally assigned teacher."""
+        self.ensure_one()
+        Employee = self.env['hr.employee']
+        exclude_id = self.original_teacher_id.id or self.teacher_id.id
+        return Employee.find_available_substitutes(
+            self.subject_id.id,
+            self.start_datetime,
+            self.end_datetime,
+            exclude_teacher_id=exclude_id,
+        )
 
     @api.constrains('teacher_id', 'start_datetime', 'end_datetime', 'state')
     def _check_teacher_overlap(self):
@@ -83,16 +108,3 @@ class InstituteClassSession(models.Model):
                     f"{session.subject_id.name}."
                 )
                 
-    def get_substitute_candidates(self):
-        """Return ranked, qualified, available substitute teachers for this
-        session, excluding the currently/originally assigned teacher."""
-        self.ensure_one()
-        Employee = self.env['hr.employee']
-        exclude_id = self.original_teacher_id.id or self.teacher_id.id
-        return Employee.find_available_substitutes(
-            self.subject_id.id,
-            self.start_datetime,
-            self.end_datetime,
-            exclude_teacher_id=exclude_id,
-        )
-        
