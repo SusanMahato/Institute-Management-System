@@ -1,0 +1,42 @@
+<odoo>
+    <record id="view_institute_syllabus_log_form" model="ir.ui.view">
+        <field name="name">institute.syllabus.log.form</field>
+        <field name="model">institute.syllabus.log</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <field name="session_id" readonly="1"/>
+                    <field name="topic_id" readonly="1"/>
+                    <field name="completed"/>
+                    <field name="notes"/>
+                </group>
+                <footer>
+                    <button string="Save Log" type="object" name="action_save" class="btn-primary" special="save"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_institute_syllabus_log_list" model="ir.ui.view">
+        <field name="name">institute.syllabus.log.list</field>
+        <field name="model">institute.syllabus.log</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="topic_id"/>
+                <field name="session_id"/>
+                <field name="completed"/>
+                <field name="log_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_institute_syllabus_log" model="ir.actions.act_window">
+        <field name="name">Syllabus Logs</field>
+        <field name="res_model">institute.syllabus.log</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_institute_syllabus" name="Syllabus" parent="menu_institute_root"/>
+    <menuitem id="menu_institute_syllabus_log" name="Syllabus Logs" parent="menu_institute_syllabus" action="action_institute_syllabus_log"/>
+</odoo>

@@ -27,7 +27,6 @@ class InstituteChapter(models.Model):
     subject_id = fields.Many2one('institute.subject', required=True, ondelete='cascade')
     topic_ids = fields.One2many('institute.topic', 'chapter_id', string='Topics')
 
-
 class InstituteTopic(models.Model):
     _name = 'institute.topic'
     _description = 'Topic'
@@ -42,9 +41,22 @@ class InstituteTopic(models.Model):
     session_count = fields.Integer(
         compute='_compute_session_count', store=True, string='Scheduled Sessions'
     )
+    syllabus_log_ids = fields.One2many('institute.syllabus.log', 'topic_id', string='Syllabus Logs')
+    logged_count = fields.Integer(compute='_compute_progress', store=True, string='Sessions Logged')
+    completion_percent = fields.Float(compute='_compute_progress', store=True, string='Completion %')
+    progress_label = fields.Char(compute='_compute_progress', store=True, string='Progress')
 
     @api.depends('session_ids.state')
     def _compute_session_count(self):
         for topic in self:
             topic.session_count = len(topic.session_ids.filtered(lambda s: s.state != 'cancelled'))
+
+    @api.depends('syllabus_log_ids.completed', 'standard_class_count')
+    def _compute_progress(self):
+        for topic in self:
+            logged = len(topic.syllabus_log_ids.filtered('completed'))
+            planned = topic.standard_class_count or 1
+            topic.logged_count = logged
+            topic.completion_percent = min(100.0, (logged / planned) * 100)
+            topic.progress_label = f"{logged}/{topic.standard_class_count} — {round(topic.completion_percent)}%"
             

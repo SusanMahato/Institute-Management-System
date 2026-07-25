@@ -27,6 +27,8 @@
                             class="btn-primary" invisible="state != 'needs_substitute'"/>
                     <button name="action_acknowledge" type="object" string="Acknowledge Assignment"
                             class="btn-warning" invisible="state != 'substituted' or acknowledged"/>
+                    <button name="action_log_syllabus" type="object" string="Log Syllabus Progress"
+                            class="btn-secondary"/>        
                     <field name="state" widget="statusbar"/>
                 </header>
                 <sheet>

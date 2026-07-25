@@ -119,4 +119,16 @@ class InstituteClassSession(models.Model):
                     f"Teacher {session.teacher_id.name} is not qualified to teach "
                     f"{session.subject_id.name}."
                 )
-                
+    
+    def action_log_syllabus(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Log Syllabus Progress',
+            'res_model': 'institute.syllabus.log',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_session_id': self.id,
+            },
+        }           
