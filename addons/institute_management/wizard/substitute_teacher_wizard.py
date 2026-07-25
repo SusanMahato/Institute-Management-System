@@ -23,6 +23,9 @@ class SubstituteTeacherWizard(models.TransientModel):
         session.write({
             'teacher_id': self.substitute_teacher_id.id,
             'state': 'substituted',
+            'acknowledged': False,
+            'acknowledged_by_id': False,
+            'acknowledged_at': False,
         })
 
         session.message_post(

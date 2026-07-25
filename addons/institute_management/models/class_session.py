@@ -27,6 +27,18 @@ class InstituteClassSession(models.Model):
     ], default='scheduled', required=True, tracking=True)
 
     original_teacher_id = fields.Many2one('hr.employee', string='Original Teacher', readonly=True)
+    
+    acknowledged = fields.Boolean(default=False, readonly=True)
+    acknowledged_by_id = fields.Many2one('hr.employee', readonly=True, string='Acknowledged By')
+    acknowledged_at = fields.Datetime(readonly=True)
+
+    def action_acknowledge(self):
+        for session in self:
+            session.write({
+                'acknowledged': True,
+                'acknowledged_by_id': session.teacher_id.id,
+                'acknowledged_at': fields.Datetime.now(),
+            })
 
     def action_mark_unavailable(self):
         for session in self:
