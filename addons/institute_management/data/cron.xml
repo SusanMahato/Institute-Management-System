@@ -1,0 +1,11 @@
+<odoo>
+    <record id="ir_cron_check_syllabus_lag" model="ir.cron">
+        <field name="name">Institute: Check Syllabus Lag</field>
+        <field name="model_id" ref="model_institute_batch"/>
+        <field name="state">code</field>
+        <field name="code">model._cron_check_syllabus_lag()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

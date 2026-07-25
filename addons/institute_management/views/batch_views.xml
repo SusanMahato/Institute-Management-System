@@ -6,6 +6,9 @@
             <list>
                 <field name="name"/>
                 <field name="course_id"/>
+                <field name="batch_completion_percent" widget="progressbar"/>
+                <field name="projected_finish_date"/>
+                <field name="lagging_flag" widget="boolean_toggle"/>
             </list>
         </field>
     </record>
@@ -19,6 +22,10 @@
                     <group>
                         <field name="name"/>
                         <field name="course_id"/>
+                        <field name="start_date"/>
+                        <field name="batch_completion_percent" widget="progressbar" readonly="1"/>
+                        <field name="projected_finish_date" readonly="1"/>
+                        <field name="lagging_flag" readonly="1"/>
                     </group>
                     <notebook>
                         <page string="Students">
@@ -36,5 +43,13 @@
         <field name="view_mode">list,form</field>
     </record>
 
+    <record id="action_institute_progress_tracker" model="ir.actions.act_window">
+        <field name="name">Master Progress Tracker</field>
+        <field name="res_model">institute.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_institute_batch_list"/>
+    </record>
+
     <menuitem id="menu_institute_batch" name="Batches" parent="menu_institute_curriculum" action="action_institute_batch"/>
+    <menuitem id="menu_institute_progress_tracker" name="Master Progress Tracker" parent="menu_institute_syllabus" action="action_institute_progress_tracker" sequence="10"/>
 </odoo>

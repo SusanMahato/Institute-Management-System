@@ -27,6 +27,7 @@ class InstituteChapter(models.Model):
     subject_id = fields.Many2one('institute.subject', required=True, ondelete='cascade')
     topic_ids = fields.One2many('institute.topic', 'chapter_id', string='Topics')
 
+
 class InstituteTopic(models.Model):
     _name = 'institute.topic'
     _description = 'Topic'
@@ -45,6 +46,7 @@ class InstituteTopic(models.Model):
     logged_count = fields.Integer(compute='_compute_progress', store=True, string='Sessions Logged')
     completion_percent = fields.Float(compute='_compute_progress', store=True, string='Completion %')
     progress_label = fields.Char(compute='_compute_progress', store=True, string='Progress')
+    is_lagging = fields.Boolean(compute='_compute_is_lagging', store=True)
 
     @api.depends('session_ids.state')
     def _compute_session_count(self):
@@ -59,4 +61,12 @@ class InstituteTopic(models.Model):
             topic.logged_count = logged
             topic.completion_percent = min(100.0, (logged / planned) * 100)
             topic.progress_label = f"{logged}/{topic.standard_class_count} — {round(topic.completion_percent)}%"
+
+    @api.depends('session_count', 'standard_class_count', 'completion_percent')
+    def _compute_is_lagging(self):
+        for topic in self:
+            topic.is_lagging = (
+                topic.session_count >= topic.standard_class_count
+                and topic.completion_percent < 100
+            )
             
