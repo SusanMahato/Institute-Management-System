@@ -98,6 +98,32 @@
         <field name="view_mode">calendar,kanban,list,form</field>
     </record>
 
-    <menuitem id="menu_institute_scheduling" name="Scheduling" parent="menu_institute_root"/>
-    <menuitem id="menu_institute_session" name="Class Sessions" parent="menu_institute_scheduling" action="action_institute_session"/>
+    <record id="view_institute_session_history_list" model="ir.ui.view">
+        <field name="name">institute.class.session.history.list</field>
+        <field name="model">institute.class.session</field>
+        <field name="arch" type="xml">
+            <list create="false" edit="false" delete="false">
+                <field name="topic_id"/>
+                <field name="teacher_id"/>
+                <field name="original_teacher_id"/>
+                <field name="batch_id"/>
+                <field name="start_datetime"/>
+                <field name="end_datetime"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_institute_session_history" model="ir.actions.act_window">
+        <field name="name">Completed Class History</field>
+        <field name="res_model">institute.class.session</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_institute_session_history_list"/>
+        <field name="domain">[('is_history', '=', True)]</field>
+    </record>
+
+<menuitem id="menu_institute_scheduling" name="Scheduling" parent="menu_institute_root"/>
+<menuitem id="menu_institute_session" name="Class Sessions" parent="menu_institute_scheduling" action="action_institute_session"/>
+<menuitem id="menu_institute_session_history" name="Completed Class History" parent="menu_institute_scheduling" action="action_institute_session_history" sequence="10"/>
+
 </odoo>

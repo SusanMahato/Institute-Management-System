@@ -31,6 +31,8 @@ class InstituteClassSession(models.Model):
     acknowledged = fields.Boolean(default=False, readonly=True)
     acknowledged_by_id = fields.Many2one('hr.employee', readonly=True, string='Acknowledged By')
     acknowledged_at = fields.Datetime(readonly=True)
+    
+    is_history = fields.Boolean(compute='_compute_is_history', store=True)
 
     def action_acknowledge(self):
         for session in self:
@@ -74,7 +76,12 @@ class InstituteClassSession(models.Model):
             self.end_datetime,
             exclude_teacher_id=exclude_id,
         )
-
+        
+    @api.depends('state')
+    def _compute_is_history(self):
+        for session in self:
+            session.is_history = session.state in ('completed', 'substituted')
+                
     @api.constrains('teacher_id', 'start_datetime', 'end_datetime', 'state')
     def _check_teacher_overlap(self):
         for session in self:
@@ -119,7 +126,7 @@ class InstituteClassSession(models.Model):
                     f"Teacher {session.teacher_id.name} is not qualified to teach "
                     f"{session.subject_id.name}."
                 )
-    
+                         
     def action_log_syllabus(self):
         self.ensure_one()
         return {
