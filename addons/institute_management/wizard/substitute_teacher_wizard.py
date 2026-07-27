@@ -1,4 +1,8 @@
+import logging
+import requests
 from odoo import models, fields, api
+
+_logger = logging.getLogger(__name__)
 
 
 class SubstituteTeacherWizard(models.TransientModel):
@@ -14,6 +18,29 @@ class SubstituteTeacherWizard(models.TransientModel):
     def _compute_candidates(self):
         for wizard in self:
             wizard.candidate_ids = wizard.session_id.get_substitute_candidates() if wizard.session_id else False
+
+    def _send_sms(self, to_number, message):
+        if not to_number:
+            _logger.info("No phone number on file; skipping SMS.")
+            return
+        ICP = self.env['ir.config_parameter'].sudo()
+        account_sid = ICP.get_param('institute_management.twilio_account_sid')
+        auth_token = ICP.get_param('institute_management.twilio_auth_token')
+        from_number = ICP.get_param('institute_management.twilio_from_number')
+        if not (account_sid and auth_token and from_number):
+            _logger.warning("Twilio credentials not configured; skipping SMS.")
+            return
+        url = f"https://api.twilio.com/2010-04-01/Accounts/{account_sid}/Messages.json"
+        try:
+            resp = requests.post(
+                url,
+                data={'To': to_number, 'From': from_number, 'Body': message},
+                auth=(account_sid, auth_token),
+                timeout=10,
+            )
+            _logger.info("Twilio SMS response: %s %s", resp.status_code, resp.text[:200])
+        except Exception as e:
+            _logger.error("Failed to send SMS via Twilio: %s", e)
 
     def action_confirm(self):
         self.ensure_one()
@@ -43,5 +70,11 @@ class SubstituteTeacherWizard(models.TransientModel):
                 'message': f"{self.substitute_teacher_id.name} assigned to {session.topic_id.name}",
             },
         )
+
+        self._send_sms(
+            self.substitute_teacher_id.mobile_phone,
+            f"You've been assigned to teach {session.topic_id.name} "
+            f"on {session.start_datetime}. Check the portal for details."
+        )
+
         return {'type': 'ir.actions.act_window_close'}
-    
