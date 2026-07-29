@@ -141,6 +141,8 @@
 
     <!-- Menu items -->
     <menuitem id="menu_institute_root" name="Institute Management"/>
+    <menuitem id="menu_institute_scheduling" name="Scheduling" parent="menu_institute_root"/>
+    <menuitem id="menu_institute_syllabus" name="Syllabus" parent="menu_institute_root"/>
     <menuitem id="menu_institute_curriculum" name="Curriculum" parent="menu_institute_root"/>
     <menuitem id="menu_institute_course" name="Courses" parent="menu_institute_curriculum" action="action_institute_course"/>
     <menuitem id="menu_institute_subject" name="Subjects" parent="menu_institute_curriculum" action="action_institute_subject"/>

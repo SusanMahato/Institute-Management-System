@@ -122,7 +122,6 @@
         <field name="domain">[('is_history', '=', True)]</field>
     </record>
 
-<menuitem id="menu_institute_scheduling" name="Scheduling" parent="menu_institute_root"/>
 <menuitem id="menu_institute_session" name="Class Sessions" parent="menu_institute_scheduling" action="action_institute_session"/>
 <menuitem id="menu_institute_session_history" name="Completed Class History" parent="menu_institute_scheduling" action="action_institute_session_history" sequence="10"/>
 
