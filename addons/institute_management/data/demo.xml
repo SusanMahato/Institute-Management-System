@@ -1,20 +1,72 @@
 <odoo noupdate="1">
+
+    <!-- ===================== Curriculum ===================== -->
+
     <record id="demo_course_physics" model="institute.course">
         <field name="name">Physics</field>
     </record>
+    <record id="demo_course_chemistry" model="institute.course">
+        <field name="name">Chemistry</field>
+    </record>
+
     <record id="demo_subject_mechanics" model="institute.subject">
         <field name="name">Mechanics</field>
         <field name="course_id" ref="demo_course_physics"/>
     </record>
+    <record id="demo_subject_optics" model="institute.subject">
+        <field name="name">Optics</field>
+        <field name="course_id" ref="demo_course_physics"/>
+    </record>
+    <record id="demo_subject_organic_chem" model="institute.subject">
+        <field name="name">Organic Chemistry</field>
+        <field name="course_id" ref="demo_course_chemistry"/>
+    </record>
+
     <record id="demo_chapter_motion" model="institute.chapter">
         <field name="name">Laws of Motion</field>
         <field name="subject_id" ref="demo_subject_mechanics"/>
     </record>
+    <record id="demo_chapter_reflection" model="institute.chapter">
+        <field name="name">Reflection and Refraction</field>
+        <field name="subject_id" ref="demo_subject_optics"/>
+    </record>
+    <record id="demo_chapter_hydrocarbons" model="institute.chapter">
+        <field name="name">Hydrocarbons</field>
+        <field name="subject_id" ref="demo_subject_organic_chem"/>
+    </record>
+
+    <!-- T1: fully covered example (100% completion, not lagging) -->
     <record id="demo_topic_newton1" model="institute.topic">
         <field name="name">Newton's First Law</field>
         <field name="chapter_id" ref="demo_chapter_motion"/>
         <field name="standard_class_count">2</field>
     </record>
+    <!-- T2: at-risk example (50% completion, both sessions already held -> lagging) -->
+    <record id="demo_topic_newton2" model="institute.topic">
+        <field name="name">Newton's Second Law</field>
+        <field name="chapter_id" ref="demo_chapter_motion"/>
+        <field name="standard_class_count">2</field>
+    </record>
+    <!-- T3: not-yet-started example (0%, 0 sessions, not lagging) -->
+    <record id="demo_topic_newton3" model="institute.topic">
+        <field name="name">Newton's Third Law</field>
+        <field name="chapter_id" ref="demo_chapter_motion"/>
+        <field name="standard_class_count">1</field>
+    </record>
+    <!-- T4: live SOS demo topic (session needs a substitute) -->
+    <record id="demo_topic_reflection_laws" model="institute.topic">
+        <field name="name">Laws of Reflection</field>
+        <field name="chapter_id" ref="demo_chapter_reflection"/>
+        <field name="standard_class_count">1</field>
+    </record>
+    <!-- T5: in-progress example (0%, under session count, not lagging) -->
+    <record id="demo_topic_alkanes" model="institute.topic">
+        <field name="name">Alkanes</field>
+        <field name="chapter_id" ref="demo_chapter_hydrocarbons"/>
+        <field name="standard_class_count">2</field>
+    </record>
+
+    <!-- ===================== Rooms ===================== -->
 
     <record id="demo_room_101" model="institute.room">
         <field name="name">Room 101</field>
@@ -22,14 +74,149 @@
         <field name="floor">1</field>
         <field name="capacity">40</field>
     </record>
+    <record id="demo_room_102" model="institute.room">
+        <field name="name">Room 102</field>
+        <field name="building">Main Block</field>
+        <field name="floor">1</field>
+        <field name="capacity">35</field>
+    </record>
     <record id="demo_room_virtual" model="institute.room">
         <field name="name">Virtual Room A</field>
         <field name="is_virtual">True</field>
         <field name="meeting_link">https://meet.example.com/room-a</field>
     </record>
 
+    <!-- ===================== Teachers ===================== -->
+
+    <record id="demo_teacher_anita" model="hr.employee">
+        <field name="name">Anita Sharma</field>
+        <field name="subject_ids" eval="[(6, 0, [ref('demo_subject_mechanics'), ref('demo_subject_optics')])]"/>
+    </record>
+    <record id="demo_teacher_ramesh" model="hr.employee">
+        <field name="name">Ramesh Koirala</field>
+        <field name="subject_ids" eval="[(6, 0, [ref('demo_subject_mechanics')])]"/>
+    </record>
+    <record id="demo_teacher_suresh" model="hr.employee">
+        <field name="name">Suresh Thapa</field>
+        <field name="subject_ids" eval="[(6, 0, [ref('demo_subject_mechanics'), ref('demo_subject_optics')])]"/>
+    </record>
+    <record id="demo_teacher_bishal" model="hr.employee">
+        <field name="name">Bishal Rai</field>
+        <field name="subject_ids" eval="[(6, 0, [ref('demo_subject_optics')])]"/>
+    </record>
+    <record id="demo_teacher_priya" model="hr.employee">
+        <field name="name">Priya Gurung</field>
+        <field name="subject_ids" eval="[(6, 0, [ref('demo_subject_organic_chem')])]"/>
+    </record>
+
+    <!-- ===================== Students ===================== -->
+
+    <record id="demo_student_aakriti" model="res.partner">
+        <field name="name">Aakriti Rai</field>
+    </record>
+    <record id="demo_student_bibek" model="res.partner">
+        <field name="name">Bibek Shrestha</field>
+    </record>
+    <record id="demo_student_chandani" model="res.partner">
+        <field name="name">Chandani Poudel</field>
+    </record>
+
+    <!-- ===================== Batches ===================== -->
+
     <record id="demo_batch_physics_a" model="institute.batch">
         <field name="name">Physics Batch A</field>
         <field name="course_id" ref="demo_course_physics"/>
+        <field name="student_ids" eval="[(6, 0, [ref('demo_student_aakriti'), ref('demo_student_bibek')])]"/>
     </record>
+    <record id="demo_batch_chemistry_a" model="institute.batch">
+        <field name="name">Chemistry Batch A</field>
+        <field name="course_id" ref="demo_course_chemistry"/>
+        <field name="student_ids" eval="[(6, 0, [ref('demo_student_chandani')])]"/>
+    </record>
+
+    <!-- ===================== Sessions & Syllabus Logs ===================== -->
+
+    <!-- T1 Newton's First Law: 2 past sessions, both logged -> 100% complete -->
+    <record id="demo_session_n1_a" model="institute.class.session">
+        <field name="teacher_id" ref="demo_teacher_anita"/>
+        <field name="room_id" ref="demo_room_101"/>
+        <field name="batch_id" ref="demo_batch_physics_a"/>
+        <field name="topic_id" ref="demo_topic_newton1"/>
+        <field name="start_datetime" eval="(datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d 09:00:00')"/>
+        <field name="end_datetime" eval="(datetime.now() - timedelta(days=3)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="state">completed</field>
+    </record>
+
+    <record id="demo_session_n1_b" model="institute.class.session">
+        <field name="teacher_id" ref="demo_teacher_anita"/>
+        <field name="room_id" ref="demo_room_101"/>
+        <field name="batch_id" ref="demo_batch_physics_a"/>
+        <field name="topic_id" ref="demo_topic_newton1"/>
+        <field name="start_datetime" eval="(datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="end_datetime" eval="(datetime.now() - timedelta(days=2)).strftime('%Y-%m-%d 11:00:00')"/>
+        <field name="state">completed</field>
+    </record>
+
+    <record id="demo_log_n1_a" model="institute.syllabus.log">
+        <field name="session_id" ref="demo_session_n1_a"/>
+        <field name="completed">True</field>
+        <field name="notes">Covered in full, good engagement.</field>
+    </record>
+    <record id="demo_log_n1_b" model="institute.syllabus.log">
+        <field name="session_id" ref="demo_session_n1_b"/>
+        <field name="completed">True</field>
+        <field name="notes">Recap + practice problems.</field>
+    </record>
+
+    <!-- T2 Newton's Second Law: 2 past sessions, only 1 logged -> 50%, lagging -->
+    <record id="demo_session_n2_a" model="institute.class.session">
+        <field name="teacher_id" ref="demo_teacher_ramesh"/>
+        <field name="room_id" ref="demo_room_101"/>
+        <field name="batch_id" ref="demo_batch_physics_a"/>
+        <field name="topic_id" ref="demo_topic_newton2"/>
+        <field name="start_datetime" eval="(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="end_datetime" eval="(datetime.now() - timedelta(days=5)).strftime('%Y-%m-%d 11:00:00')"/>
+        <field name="state">completed</field>
+    </record>
+    <record id="demo_session_n2_b" model="institute.class.session">
+        <field name="teacher_id" ref="demo_teacher_ramesh"/>
+        <field name="room_id" ref="demo_room_101"/>
+        <field name="batch_id" ref="demo_batch_physics_a"/>
+        <field name="topic_id" ref="demo_topic_newton2"/>
+        <field name="start_datetime" eval="(datetime.now() - timedelta(days=4)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="end_datetime" eval="(datetime.now() - timedelta(days=4)).strftime('%Y-%m-%d 11:00:00')"/>
+        <field name="state">completed</field>
+    </record>
+    <record id="demo_log_n2_a" model="institute.syllabus.log">
+        <field name="session_id" ref="demo_session_n2_a"/>
+        <field name="completed">True</field>
+        <field name="notes">First half covered.</field>
+    </record>
+    <!-- Deliberately no log for demo_session_n2_b -> shows as "lagging" -->
+
+    <!-- T4 Laws of Reflection: upcoming session, teacher just went unavailable ->
+         a ready-made live demo of the SOS "Find Substitute" wizard -->
+    <record id="demo_session_reflection_sos" model="institute.class.session">
+        <field name="teacher_id" ref="demo_teacher_anita"/>
+        <field name="room_id" ref="demo_room_virtual"/>
+        <field name="batch_id" ref="demo_batch_physics_a"/>
+        <field name="topic_id" ref="demo_topic_reflection_laws"/>
+        <field name="start_datetime" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 09:00:00')"/>
+        <field name="end_datetime" eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="state">needs_substitute</field>
+        <field name="original_teacher_id" ref="demo_teacher_anita"/>
+    </record>
+
+    <!-- T5 Alkanes: one upcoming session scheduled, under standard_class_count,
+         so it shows as in-progress/not-yet-lagging -->
+    <record id="demo_session_alkanes_a" model="institute.class.session">
+        <field name="teacher_id" ref="demo_teacher_priya"/>
+        <field name="room_id" ref="demo_room_102"/>
+        <field name="batch_id" ref="demo_batch_chemistry_a"/>
+        <field name="topic_id" ref="demo_topic_alkanes"/>
+        <field name="start_datetime" eval="(datetime.now() + timedelta(days=2)).strftime('%Y-%m-%d 09:00:00')"/>
+        <field name="end_datetime" eval="(datetime.now() + timedelta(days=2)).strftime('%Y-%m-%d 10:00:00')"/>
+        <field name="state">scheduled</field>
+    </record>
+
 </odoo>
