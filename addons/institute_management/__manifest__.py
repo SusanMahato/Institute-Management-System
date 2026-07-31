@@ -18,6 +18,7 @@ teachers, and students.
         'security/institute_groups.xml',
         'security/ir.model.access.csv',
         'views/curriculum_views.xml',
+        'views/dashboard_views.xml',
         'views/room_views.xml',
         'views/teacher_views.xml',
         'views/batch_views.xml',
@@ -26,6 +27,13 @@ teachers, and students.
         'data/cron.xml',
         'wizard/substitute_teacher_wizard_views.xml',
     ],
+    'assets': {
+        'web.assets_backend': [
+            'institute_management/static/src/dashboard/dashboard.js',
+            'institute_management/static/src/dashboard/dashboard.xml',
+            'institute_management/static/src/dashboard/dashboard.scss',
+        ],
+    },
     'demo': [
         'data/demo.xml',
     ],

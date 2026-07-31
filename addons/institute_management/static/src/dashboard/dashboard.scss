@@ -1,0 +1,9 @@
+.o_institute_dashboard {
+    .o_institute_dashboard_item {
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--bs-light, #f8f9fa);
+        }
+    }
+}

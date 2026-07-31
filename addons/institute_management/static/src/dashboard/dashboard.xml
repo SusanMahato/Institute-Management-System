@@ -1,0 +1,79 @@
+<templates xml:space="preserve">
+    <t t-name="institute_management.Dashboard">
+        <div class="o_institute_dashboard p-4">
+            <h2 class="mb-4">Coordinator Dashboard</h2>
+
+            <div t-if="state.loading" class="text-muted">Loading dashboard...</div>
+
+            <div t-else="">
+                <!-- KPI Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="fs-2 fw-bold" t-esc="state.data.teacher_count"/>
+                                <div class="text-muted">Teachers</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="fs-2 fw-bold" t-esc="state.data.batch_count"/>
+                                <div class="text-muted">Batches</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100">
+                            <div class="card-body">
+                                <div class="fs-2 fw-bold" t-esc="state.data.today_classes_count"/>
+                                <div class="text-muted">Today's Classes</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card text-center shadow-sm h-100 border-danger">
+                            <div class="card-body">
+                                <div class="fs-2 fw-bold" t-esc="state.data.pending_sos_count"/>
+                                <div class="text-muted">Pending SOS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Required -->
+                <div class="card shadow-sm">
+                    <div class="card-header fw-bold">⚠ Action Required</div>
+                    <ul class="list-group list-group-flush">
+                        <li t-if="!state.data.pending_sos.length and !state.data.lagging_batches.length"
+                            class="list-group-item text-muted">
+                            Nothing needs attention right now.
+                        </li>
+
+                        <li t-foreach="state.data.pending_sos" t-as="sos" t-key="sos.id"
+                            class="list-group-item o_institute_dashboard_item"
+                            t-on-click="() => this.openSession(sos.id)">
+                            <span class="me-2">🚨</span>
+                            <strong t-esc="sos.batch_name"/> – <span t-esc="sos.topic_name"/>
+                            <br/>
+                            <span class="text-muted" t-esc="sos.start_datetime"/>
+                            <span class="text-muted"> · Needs substitute teacher</span>
+                        </li>
+
+                        <li t-foreach="state.data.lagging_batches" t-as="batch" t-key="batch.id"
+                            class="list-group-item o_institute_dashboard_item"
+                            t-on-click="() => this.openBatch(batch.id)">
+                            <span class="me-2">⚠️</span>
+                            <strong t-esc="batch.name"/>
+                            <br/>
+                            <span class="text-muted">
+                                Completion: <t t-esc="batch.completion_percent"/>% — Lagging
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
