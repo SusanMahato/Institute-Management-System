@@ -27,11 +27,19 @@ class InstituteDashboard(models.AbstractModel):
         batch_count = Batch.search_count([])
 
         today_str = fields.Date.context_today(self).strftime('%Y-%m-%d')
-        today_classes_count = Session.search_count([
+        today_sessions = Session.search([
             ('state', '!=', 'cancelled'),
             ('start_datetime', '>=', today_str + ' 00:00:00'),
             ('start_datetime', '<=', today_str + ' 23:59:59'),
-        ])
+        ], order='start_datetime')
+        today_classes_count = len(today_sessions)
+        today_schedule = [{
+            'id': s.id,
+            'start_datetime': fields.Datetime.to_string(s.start_datetime),
+            'topic_name': s.topic_id.name,
+            'room_name': s.room_id.name,
+            'batch_name': s.batch_id.name,
+        } for s in today_sessions]
 
         pending_sos_sessions = Session.search([('state', '=', 'needs_substitute')])
         pending_sos = [{
@@ -78,5 +86,6 @@ class InstituteDashboard(models.AbstractModel):
             'lagging_batches': lagging_batches,
             'syllabus_progress': syllabus_progress,
             'teacher_workload': teacher_workload,
+            'today_schedule': today_schedule,
         }
         
