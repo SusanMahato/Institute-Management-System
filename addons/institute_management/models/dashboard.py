@@ -48,6 +48,27 @@ class InstituteDashboard(models.AbstractModel):
             'completion_percent': round(b.batch_completion_percent, 1),
         } for b in lagging]
 
+        # Syllabus Progress chart: every batch, worst-progress first so
+        # lagging batches are visually obvious. Reuses the existing
+        # batch_completion_percent compute field directly -- no new logic.
+        all_batches = Batch.search([], order='name')
+        syllabus_progress = sorted([{
+            'id': b.id,
+            'name': b.name,
+            'completion_percent': round(b.batch_completion_percent, 1),
+        } for b in all_batches], key=lambda x: x['completion_percent'])
+
+        # Teacher Workload chart: reuses the existing
+        # _current_weekly_workload() helper (already used for SOS ranking)
+        # directly. Busiest teacher first, since that's what a coordinator
+        # needs to see first when deciding who NOT to overload further.
+        teachers = Employee.search([('subject_ids', '!=', False)])
+        teacher_workload = sorted([{
+            'id': t.id,
+            'name': t.name,
+            'workload': t._current_weekly_workload(),
+        } for t in teachers], key=lambda x: x['workload'], reverse=True)
+
         return {
             'teacher_count': teacher_count,
             'batch_count': batch_count,
@@ -55,5 +76,7 @@ class InstituteDashboard(models.AbstractModel):
             'pending_sos_count': len(pending_sos),
             'pending_sos': pending_sos,
             'lagging_batches': lagging_batches,
+            'syllabus_progress': syllabus_progress,
+            'teacher_workload': teacher_workload,
         }
         

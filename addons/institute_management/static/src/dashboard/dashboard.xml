@@ -73,6 +73,26 @@
                         </li>
                     </ul>
                 </div>
+
+                <!-- Charts -->
+                <div class="row g-3 mt-1">
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header fw-bold">Syllabus Progress by Batch</div>
+                            <div class="card-body">
+                                <canvas t-ref="syllabusChart"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-header fw-bold">Teacher Workload</div>
+                            <div class="card-body">
+                                <canvas t-ref="workloadChart"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </t>

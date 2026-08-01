@@ -1,9 +1,21 @@
 .o_institute_dashboard {
+    height: 100%;
+    overflow-y: auto;
+
     .o_institute_dashboard_item {
         cursor: pointer;
 
         &:hover {
             background-color: var(--bs-light, #f8f9fa);
         }
+    }
+
+    canvas {
+        max-height: 280px;
+    }
+
+    .card-body:has(canvas) {
+        position: relative;
+        height: 300px;
     }
 }
