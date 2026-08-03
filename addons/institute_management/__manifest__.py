@@ -24,6 +24,7 @@ teachers, and students.
         'views/batch_views.xml',
         'views/session_views.xml',
         'views/syllabus_views.xml',
+        'data/mail_templates.xml',
         'data/cron.xml',
         'wizard/substitute_teacher_wizard_views.xml',
     ],

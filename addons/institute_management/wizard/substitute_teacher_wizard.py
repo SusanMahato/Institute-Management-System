@@ -42,6 +42,21 @@ class SubstituteTeacherWizard(models.TransientModel):
         except Exception as e:
             _logger.error("Failed to send SMS via Twilio: %s", e)
 
+    def _send_substitute_email(self, session):
+        template = self.env.ref(
+            'institute_management.mail_template_substitute_assignment', raise_if_not_found=False)
+        if not template:
+            _logger.warning("Substitute assignment email template not found; skipping email.")
+            return
+        if not self.substitute_teacher_id.work_email:
+            _logger.info("No email on file for substitute teacher; skipping email.")
+            return
+        template.send_mail(
+            session.id,
+            email_values={'email_to': self.substitute_teacher_id.work_email},
+            force_send=True,
+        )
+
     def action_confirm(self):
         self.ensure_one()
         session = self.session_id
@@ -77,4 +92,7 @@ class SubstituteTeacherWizard(models.TransientModel):
             f"on {session.start_datetime}. Check the portal for details."
         )
 
+        self._send_substitute_email(session)
+
         return {'type': 'ir.actions.act_window_close'}
+    

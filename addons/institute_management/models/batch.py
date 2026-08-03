@@ -36,7 +36,24 @@ class InstituteBatch(models.Model):
                 batch.projected_finish_date = False
 
     def _cron_check_syllabus_lag(self):
+        template = self.env.ref(
+            'institute_management.mail_template_syllabus_lag_alert', raise_if_not_found=False)
+        coordinator_group = self.env.ref(
+            'institute_management.group_institute_coordinator', raise_if_not_found=False)
+        coordinator_users = self.env['res.users'].search(
+            [('group_ids', 'in', coordinator_group.id)]) if coordinator_group else self.env['res.users']
+        coordinator_emails = [u.email for u in coordinator_users if u.email]
         for batch in self.search([]):
             topics = batch._get_course_topics()
-            batch.lagging_flag = bool(topics.filtered('is_lagging'))
-            
+            was_lagging = batch.lagging_flag
+            is_lagging = bool(topics.filtered('is_lagging'))
+            batch.lagging_flag = is_lagging
+            # Only alert on the transition into lagging, not every day it
+            # stays lagging -- avoids spamming coordinators with repeats.
+            if is_lagging and not was_lagging and template and coordinator_emails:
+                template.send_mail(
+                    batch.id,
+                    email_values={'email_to': ','.join(coordinator_emails)},
+                    force_send=True,
+                )
+                

@@ -1,0 +1,43 @@
+<odoo>
+
+    <record id="mail_template_substitute_assignment" model="mail.template">
+        <field name="name">Substitute Teacher Assignment</field>
+        <field name="model_id" ref="model_institute_class_session"/>
+        <field name="subject">You've been assigned to substitute: {{ object.topic_id.name }}</field>
+        <field name="email_to">{{ object.teacher_id.work_email }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html">
+            <![CDATA[
+            <p>Hi <t t-out="object.teacher_id.name or ''"/>,</p>
+            <p>You have been assigned as a substitute teacher for the following class:</p>
+            <ul>
+                <li><strong>Topic:</strong> <t t-out="object.topic_id.name or ''"/></li>
+                <li><strong>Batch:</strong> <t t-out="object.batch_id.name or ''"/></li>
+                <li><strong>Room:</strong> <t t-out="object.room_id.name or ''"/></li>
+                <li><strong>When:</strong> <t t-out="object.start_datetime or ''"/></li>
+            </ul>
+            <p>Please log in to the portal to acknowledge this assignment.</p>
+            ]]>
+        </field>
+    </record>
+
+    <record id="mail_template_syllabus_lag_alert" model="mail.template">
+        <field name="name">Syllabus Deadline Risk Alert</field>
+        <field name="model_id" ref="model_institute_batch"/>
+        <field name="subject">Syllabus alert: {{ object.name }} is falling behind schedule</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html">
+            <![CDATA[
+            <p>Hi,</p>
+            <p>
+                <strong><t t-out="object.name or ''"/></strong> has just been flagged as behind schedule.
+            </p>
+            <ul>
+                <li><strong>Current completion:</strong> <t t-out="'%.1f' % (object.batch_completion_percent or 0.0)"/>%</li>
+            </ul>
+            <p>Please review the batch's syllabus progress on the Coordinator Dashboard.</p>
+            ]]>
+        </field>
+    </record>
+
+</odoo>
