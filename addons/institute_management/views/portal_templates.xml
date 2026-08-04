@@ -1,0 +1,105 @@
+<odoo>
+
+    <template id="portal_teacher_not_linked" name="Teacher Portal - Not Linked">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">My Timetable</t>
+            <div class="container o_portal_my_home">
+                <div class="alert alert-warning mt-4">
+                    Your account isn't linked to a teacher profile yet.
+                    Please contact your coordinator.
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_teacher_timetable" name="Teacher Portal - My Timetable">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">My Timetable</t>
+            <div class="container o_portal_my_home mt-4">
+                <h2>My Timetable</h2>
+                <p class="text-muted">Welcome, <t t-esc="employee.name"/></p>
+
+                <!-- Needs Acknowledgment: independent of upcoming/history bucketing,
+                     since a substituted session counts as "history" immediately
+                     regardless of its actual date. -->
+                <div t-if="needs_acknowledgment" class="mb-4">
+                    <h4 class="text-warning">⚠ Needs Your Acknowledgment</h4>
+                    <div t-foreach="needs_acknowledgment" t-as="session"
+                         class="alert alert-warning d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong t-esc="session.topic_id.name"/> — <t t-esc="session.batch_id.name"/>
+                            <br/>
+                            <span class="text-muted" t-esc="session.start_datetime"/>
+                        </div>
+                        <form t-attf-action="/my/timetable/acknowledge/#{session.id}" method="post">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                            <button type="submit" class="btn btn-sm btn-warning">
+                                Acknowledge Assignment
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Upcoming / active sessions -->
+                <h4 class="mt-4">Upcoming &amp; Active Classes</h4>
+                <table class="table table-hover" t-if="upcoming_sessions">
+                    <thead>
+                        <tr>
+                            <th>When</th>
+                            <th>Topic</th>
+                            <th>Batch</th>
+                            <th>Room</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="upcoming_sessions" t-as="session"
+                            t-attf-class="#{session.start_datetime.date() == today and 'table-info' or ''}">
+                            <td>
+                                <span t-esc="session.start_datetime"/>
+                                <span t-if="session.start_datetime.date() == today"
+                                      class="badge bg-primary ms-1">Today</span>
+                            </td>
+                            <td t-esc="session.topic_id.name"/>
+                            <td t-esc="session.batch_id.name"/>
+                            <td t-esc="session.room_id.name"/>
+                            <td>
+                                <span t-esc="session.state"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="text-muted">No upcoming classes.</p>
+
+                <!-- History -->
+                <h4 class="mt-4">Recent History</h4>
+                <table class="table table-sm" t-if="history_sessions">
+                    <thead>
+                        <tr>
+                            <th>When</th>
+                            <th>Topic</th>
+                            <th>Batch</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="history_sessions" t-as="session">
+                            <td t-esc="session.start_datetime"/>
+                            <td t-esc="session.topic_id.name"/>
+                            <td t-esc="session.batch_id.name"/>
+                            <td>
+                                <span t-esc="session.state"/>
+                                <span t-if="session.state == 'substituted' and session.acknowledged"
+                                      class="text-success small ms-1">
+                                    ✓ Acknowledged <t t-esc="session.acknowledged_at"/>
+                                </span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="text-muted">No history yet.</p>
+            </div>
+        </t>
+    </template>
+
+</odoo>

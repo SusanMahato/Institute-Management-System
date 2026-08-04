@@ -13,7 +13,7 @@ teachers, and students.
     'author': 'Susan Mahato',
     'license': 'OPL-1',
     'category': 'Education',
-    'depends': ['base', 'mail', 'hr', 'calendar'],
+    'depends': ['base', 'mail', 'hr', 'calendar', 'portal'],
     'data': [
         'security/institute_groups.xml',
         'security/ir.model.access.csv',
@@ -24,6 +24,8 @@ teachers, and students.
         'views/batch_views.xml',
         'views/session_views.xml',
         'views/syllabus_views.xml',
+        'views/portal_templates.xml',
+        'views/portal_menu.xml',
         'data/mail_templates.xml',
         'data/cron.xml',
         'wizard/substitute_teacher_wizard_views.xml',

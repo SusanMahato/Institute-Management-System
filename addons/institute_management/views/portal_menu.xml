@@ -1,0 +1,16 @@
+<odoo>
+
+    <record id="action_my_timetable_url" model="ir.actions.act_url">
+        <field name="name">My Timetable</field>
+        <field name="url">/my/timetable</field>
+        <field name="target">self</field>
+    </record>
+
+    <menuitem id="menu_institute_my_timetable"
+              name="My Timetable"
+              parent="menu_institute_root"
+              action="action_my_timetable_url"
+              groups="group_institute_teacher"
+              sequence="2"/>
+
+</odoo>
