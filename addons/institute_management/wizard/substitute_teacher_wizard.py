@@ -13,12 +13,12 @@ class SubstituteTeacherWizard(models.TransientModel):
     candidate_ids = fields.Many2many('hr.employee', compute='_compute_candidates', string='Available Substitutes')
     substitute_teacher_id = fields.Many2one('hr.employee', string='Select Substitute', required=True)
     reason = fields.Char(string='Reason')
-
+    
     @api.depends('session_id')
     def _compute_candidates(self):
         for wizard in self:
             wizard.candidate_ids = wizard.session_id.get_substitute_candidates() if wizard.session_id else False
-
+            
     def _send_sms(self, to_number, message):
         if not to_number:
             _logger.info("No phone number on file; skipping SMS.")

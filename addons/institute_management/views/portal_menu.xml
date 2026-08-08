@@ -13,4 +13,17 @@
               groups="group_institute_teacher"
               sequence="2"/>
 
+    <record id="action_my_availability_url" model="ir.actions.act_url">
+        <field name="name">My Availability</field>
+        <field name="url">/my/availability</field>
+        <field name="target">self</field>
+    </record>
+
+    <menuitem id="menu_institute_my_availability"
+              name="My Availability"
+              parent="menu_institute_root"
+              action="action_my_availability_url"
+              groups="group_institute_teacher"
+              sequence="3"/>
+
 </odoo>

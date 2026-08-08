@@ -16,18 +16,16 @@ class HrEmployee(models.Model):
     )
 
     def is_available(self, start_dt, end_dt):
-        """Check whether this teacher has no approved leave overlapping
-        the given datetime range."""
-        self.ensure_one()
-        if not self.resource_id:
-            return True
-        Leaves = self.env['resource.calendar.leaves']
-        conflicting_leaves = Leaves.search([
-            ('resource_id', '=', self.resource_id.id),
-            ('date_from', '<', end_dt),
-            ('date_to', '>', start_dt),
-        ], limit=1)
-        return not conflicting_leaves
+     self.ensure_one()
+     if not self.resource_id:
+        return True
+     Leaves = self.env['resource.calendar.leaves'].sudo()
+     conflicting_leaves = Leaves.search([
+        ('resource_id', '=', self.resource_id.id),
+        ('date_from', '<', end_dt),
+        ('date_to', '>', start_dt),
+    ], limit=1)
+     return not conflicting_leaves
 
     def _current_weekly_workload(self):
         """Count this teacher's active sessions (used as a workload ranking signal)."""
