@@ -46,7 +46,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header fw-bold">⚠ Action Required</div>
                     <ul class="list-group list-group-flush">
-                        <li t-if="!state.data.pending_sos.length and !state.data.lagging_batches.length"
+                        <li t-if="!state.data.pending_sos.length and !state.data.lagging_batches.length and !state.data.unlogged_syllabus.length"
                             class="list-group-item text-muted">
                             Nothing needs attention right now.
                         </li>
@@ -70,6 +70,16 @@
                             <span class="text-muted">
                                 Completion: <t t-esc="batch.completion_percent"/>% — Lagging
                             </span>
+                        </li>
+
+                        <li t-foreach="state.data.unlogged_syllabus" t-as="log" t-key="log.id"
+                            class="list-group-item o_institute_dashboard_item"
+                            t-on-click="() => this.openSession(log.id)">
+                            <span class="me-2">📋</span>
+                            <strong t-esc="log.teacher_name"/> – <span t-esc="log.batch_name"/> (<t t-esc="log.topic_name"/>)
+                            <br/>
+                            <span class="text-muted" t-esc="log.start_datetime"/>
+                            <span class="text-muted"> · Syllabus not logged</span>
                         </li>
                     </ul>
                 </div>

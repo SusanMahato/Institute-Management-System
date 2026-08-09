@@ -49,6 +49,23 @@ class InstituteDashboard(models.AbstractModel):
             'start_datetime': fields.Datetime.to_string(s.start_datetime),
         } for s in pending_sos_sessions]
 
+        unlogged_syllabus_sessions = Session.search([('state', '=', 'completed')])
+        if unlogged_syllabus_sessions:
+            SyllabusLog = self.env['institute.syllabus.log']
+            logged_session_ids = SyllabusLog.search([
+                ('session_id', 'in', unlogged_syllabus_sessions.ids),
+            ]).mapped('session_id').ids
+            unlogged_syllabus_sessions = unlogged_syllabus_sessions.filtered(
+                lambda s: s.id not in logged_session_ids)
+
+        unlogged_syllabus = [{
+            'id': s.id,
+            'teacher_name': s.teacher_id.name,
+            'batch_name': s.batch_id.name,
+            'topic_name': s.topic_id.name,
+            'start_datetime': fields.Datetime.to_string(s.start_datetime),
+        } for s in unlogged_syllabus_sessions]
+
         lagging = Batch.search([('lagging_flag', '=', True)])
         lagging_batches = [{
             'id': b.id,
@@ -83,6 +100,8 @@ class InstituteDashboard(models.AbstractModel):
             'today_classes_count': today_classes_count,
             'pending_sos_count': len(pending_sos),
             'pending_sos': pending_sos,
+            'unlogged_syllabus_count': len(unlogged_syllabus),
+            'unlogged_syllabus': unlogged_syllabus,
             'lagging_batches': lagging_batches,
             'syllabus_progress': syllabus_progress,
             'teacher_workload': teacher_workload,
