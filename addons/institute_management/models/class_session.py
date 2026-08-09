@@ -52,6 +52,14 @@ class InstituteClassSession(models.Model):
                 'state': 'needs_substitute',
                 'original_teacher_id': session.teacher_id.id,
             })
+            
+    def action_mark_completed(self):
+        for session in self:
+            if session.state != 'scheduled':
+                raise ValidationError(
+                    "Only a scheduled session can be marked as completed."
+                )
+            session.write({'state': 'completed'})        
 
     def action_open_substitute_wizard(self):
         self.ensure_one()

@@ -21,8 +21,8 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_mark_unavailable" type="object" string="Mark Unavailable (SOS)"
-                            class="btn-danger" invisible="state != 'scheduled'"/>
+                    <button name="action_mark_completed" type="object" string="Mark Completed"
+                            class="btn-secondary" invisible="state != 'scheduled'"/>
                     <button name="action_open_substitute_wizard" type="object" string="Find Substitute"
                             class="btn-primary" invisible="state != 'needs_substitute'"/>
                     <button name="action_acknowledge" type="object" string="Acknowledge Assignment"
