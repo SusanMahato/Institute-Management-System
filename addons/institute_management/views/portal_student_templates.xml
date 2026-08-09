@@ -1,0 +1,79 @@
+<odoo>
+
+    <template id="portal_student_not_linked" name="Student Portal - Not Linked">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">My Batch</t>
+            <div class="container o_portal_my_home">
+                <div class="alert alert-warning mt-4">
+                    Your account isn't linked to a batch yet.
+                    Please contact your coordinator.
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_student_batch" name="Student Portal - My Batch">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">My Batch</t>
+            <div class="container o_portal_my_home mt-4">
+                <h2 t-esc="batch.name"/>
+                <p class="text-muted">
+                    Course: <t t-esc="batch.course_id.name"/>
+                    · Progress: <t t-esc="round(batch.batch_completion_percent, 1)"/>%
+                </p>
+
+                <h4 class="mt-4">Upcoming &amp; Active Classes</h4>
+                <table class="table table-hover" t-if="upcoming_sessions">
+                    <thead>
+                        <tr>
+                            <th>When</th>
+                            <th>Topic</th>
+                            <th>Teacher</th>
+                            <th>Room</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="upcoming_sessions" t-as="session"
+                            t-attf-class="#{session.start_datetime.date() == today and 'table-info' or ''}">
+                            <td>
+                                <span t-esc="to_local(session.start_datetime)"/>
+                                <span t-if="session.start_datetime.date() == today"
+                                      class="badge bg-primary ms-1">Today</span>
+                            </td>
+                            <td t-esc="session.topic_id.name"/>
+                            <td t-esc="session.teacher_id.name"/>
+                            <td t-esc="session.room_id.name"/>
+                            <td>
+                                <span t-esc="session.state"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="text-muted">No upcoming classes.</p>
+
+                <h4 class="mt-4">Recent History</h4>
+                <table class="table table-sm" t-if="history_sessions">
+                    <thead>
+                        <tr>
+                            <th>When</th>
+                            <th>Topic</th>
+                            <th>Teacher</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="history_sessions" t-as="session">
+                            <td t-esc="to_local(session.start_datetime)"/>
+                            <td t-esc="session.topic_id.name"/>
+                            <td t-esc="session.teacher_id.name"/>
+                            <td t-esc="session.state"/>
+                        </tr>
+                    </tbody>
+                </table>
+                <p t-else="" class="text-muted">No history yet.</p>
+            </div>
+        </t>
+    </template>
+
+</odoo>

@@ -26,6 +26,8 @@ teachers, and students.
         'views/syllabus_views.xml',
         'views/portal_templates.xml',
         'views/portal_menu.xml',
+        'views/portal_student_templates.xml',
+        'views/portal_student_menu.xml',
         'data/mail_templates.xml',
         'data/cron.xml',
         'wizard/substitute_teacher_wizard_views.xml',
