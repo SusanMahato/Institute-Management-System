@@ -55,11 +55,25 @@ class InstituteTeacherPortal(http.Controller):
             ('is_history', '=', True),
         ], order='start_datetime desc', limit=20)
 
+        # Retrieve completed sessions lacking a syllabus log entry
+        completed_sessions = Session.search([
+            ('teacher_id', '=', employee.id),
+            ('state', '=', 'completed'),
+        ])
+        unlogged_syllabus = completed_sessions
+        if completed_sessions:
+            SyllabusLog = request.env['institute.syllabus.log'].sudo()
+            logged_session_ids = SyllabusLog.search([
+                ('session_id', 'in', completed_sessions.ids),
+            ]).mapped('session_id').ids
+            unlogged_syllabus = completed_sessions.filtered(lambda s: s.id not in logged_session_ids)
+
         return request.render('institute_management.portal_teacher_timetable', {
             'employee': employee,
             'needs_acknowledgment': needs_acknowledgment,
             'upcoming_sessions': upcoming_sessions,
             'history_sessions': history_sessions,
+            'unlogged_syllabus': unlogged_syllabus,
             'today': fields.Date.context_today(request.env.user),
             'to_local': self._to_local_str,
         })
@@ -93,8 +107,8 @@ class InstituteTeacherPortal(http.Controller):
 
     @http.route(['/my/availability/add'], type='http', auth='user', methods=['POST'], website=True)
     def add_availability(self, date_from=None, date_to=None, reason=None, **kwargs):
-        _logger.debug("add_availability called: date_from=%r date_to=%r reason=%ruser=%s",
-          date_from, date_to, reason, request.env.user.login)
+        _logger.debug("add_availability called: date_from=%r date_to=%r reason=%r user=%s",
+                      date_from, date_to, reason, request.env.user.login)
         employee = self._get_current_teacher()
         if employee and date_from and date_to:
             try:

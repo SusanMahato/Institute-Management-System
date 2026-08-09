@@ -40,6 +40,23 @@
                     </div>
                 </div>
 
+                <!-- Syllabus Not Logged Section -->
+                <div t-if="unlogged_syllabus" class="mb-4">
+                    <h4 class="text-warning">⚠ Syllabus Not Logged</h4>
+                    <div t-foreach="unlogged_syllabus" t-as="session"
+                         class="alert alert-warning d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong t-esc="session.topic_id.name"/> — <t t-esc="session.batch_id.name"/>
+                            <br/>
+                            <span class="text-muted" t-esc="to_local(session.start_datetime)"/>
+                        </div>
+                        <a t-attf-href="/web#model=institute.class.session&amp;view_type=form&amp;id=#{session.id}"
+                           target="_blank" class="btn btn-sm btn-warning">
+                            Log Syllabus
+                        </a>
+                    </div>
+                </div>
+
                 <!-- Upcoming / active sessions -->
                 <h4 class="mt-4">Upcoming &amp; Active Classes</h4>
                 <table class="table table-hover" t-if="upcoming_sessions">
@@ -101,6 +118,7 @@
             </div>
         </t>
     </template>
+
     <template id="portal_teacher_availability" name="Teacher Portal - My Availability">
         <t t-call="portal.portal_layout">
             <t t-set="title">My Availability</t>

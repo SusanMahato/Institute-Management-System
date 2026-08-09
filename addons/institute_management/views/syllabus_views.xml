@@ -11,7 +11,7 @@
                     <field name="notes"/>
                 </group>
                 <footer>
-                    <button string="Save Log" type="object" name="action_save" class="btn-primary" special="save"/>
+                    <button string="Save Log" special="save" class="btn-primary"/>
                     <button string="Cancel" class="btn-secondary" special="cancel"/>
                 </footer>
             </form>
