@@ -40,4 +40,23 @@
         </field>
     </record>
 
+    <record id="mail_template_extension_approved" model="mail.template">
+        <field name="name">Syllabus Extension Approved</field>
+        <field name="model_id" ref="model_institute_syllabus_extension_request"/>
+        <field name="subject">Your extension request for {{ object.topic_id.name }} has been approved</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html">
+            <![CDATA[
+            <p>Hi <t t-out="object.teacher_id.name or ''"/>,</p>
+            <p>Your request for extra classes has been approved:</p>
+            <ul>
+                <li><strong>Batch:</strong> <t t-out="object.batch_id.name or ''"/></li>
+                <li><strong>Topic:</strong> <t t-out="object.topic_id.name or ''"/></li>
+                <li><strong>Extra classes:</strong> <t t-out="object.extra_classes or 0"/></li>
+            </ul>
+            <p>Your coordinator will schedule these additional sessions shortly.</p>
+            ]]>
+        </field>
+    </record>
+
 </odoo>

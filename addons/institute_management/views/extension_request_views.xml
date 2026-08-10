@@ -1,0 +1,69 @@
+<odoo>
+    <record id="view_extension_request_list" model="ir.ui.view">
+        <field name="name">institute.syllabus.extension.request.list</field>
+        <field name="model">institute.syllabus.extension.request</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="teacher_id"/>
+                <field name="batch_id"/>
+                <field name="topic_id"/>
+                <field name="extra_classes"/>
+                <field name="reason"/>
+                <field name="state" widget="badge"/>
+                <field name="requested_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_extension_request_form" model="ir.ui.view">
+        <field name="name">institute.syllabus.extension.request.form</field>
+        <field name="model">institute.syllabus.extension.request</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_approve" type="object" string="Approve"
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="institute_management.group_institute_coordinator"/>
+                    <button name="action_reject" type="object" string="Reject"
+                            class="btn-danger" invisible="state != 'draft'"
+                            groups="institute_management.group_institute_coordinator"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="teacher_id"/>
+                        <field name="batch_id"/>
+                        <field name="topic_id"/>
+                        <field name="extra_classes"/>
+                        <field name="reason"/>
+                        <field name="requested_date" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="rule_extension_request_teacher_own" model="ir.rule">
+        <field name="name">Teacher: own extension requests only</field>
+        <field name="model_id" ref="model_institute_syllabus_extension_request"/>
+        <field name="domain_force">[('teacher_id.user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_institute_teacher'))]"/>
+    </record>
+
+    <record id="rule_extension_request_coordinator_all" model="ir.rule">
+        <field name="name">Coordinator: all extension requests</field>
+        <field name="model_id" ref="model_institute_syllabus_extension_request"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_institute_coordinator'))]"/>
+    </record>
+
+    <record id="action_extension_request" model="ir.actions.act_window">
+        <field name="name">Syllabus Extension Requests</field>
+        <field name="res_model">institute.syllabus.extension.request</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_extension_request" name="Extension Requests"
+              parent="menu_institute_syllabus" action="action_extension_request"/>
+</odoo>
