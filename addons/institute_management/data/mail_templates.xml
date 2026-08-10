@@ -59,4 +59,24 @@
         </field>
     </record>
 
+    <record id="mail_template_room_reallocation" model="mail.template">
+        <field name="name">Room Reallocation Alert</field>
+        <field name="model_id" ref="model_institute_class_session"/>
+        <field name="subject">Room change: {{ object.topic_id.name }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html">
+            <![CDATA[
+            <p>Hi,</p>
+            <p>The room for the following class has changed:</p>
+            <ul>
+                <li><strong>Topic:</strong> <t t-out="object.topic_id.name or ''"/></li>
+                <li><strong>Batch:</strong> <t t-out="object.batch_id.name or ''"/></li>
+                <li><strong>When:</strong> <t t-out="object.start_datetime or ''"/></li>
+                <li><strong>New Room:</strong> <t t-out="object.room_id.name or ''"/></li>
+            </ul>
+            <p>Please proceed to the new room.</p>
+            ]]>
+        </field>
+    </record>
+
 </odoo>

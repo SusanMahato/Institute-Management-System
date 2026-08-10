@@ -27,12 +27,41 @@ class InstituteClassSession(models.Model):
     ], default='scheduled', required=True, tracking=True)
 
     original_teacher_id = fields.Many2one('hr.employee', string='Original Teacher', readonly=True)
-    
+
     acknowledged = fields.Boolean(default=False, readonly=True)
     acknowledged_by_id = fields.Many2one('hr.employee', readonly=True, string='Acknowledged By')
     acknowledged_at = fields.Datetime(readonly=True)
-    
+
     is_history = fields.Boolean(compute='_compute_is_history', store=True)
+
+    def write(self, vals):
+        rooms_changed = self.env['institute.class.session']
+        if 'room_id' in vals:
+            for session in self:
+                if session.state not in ('cancelled', 'completed') and session.room_id.id != vals['room_id']:
+                    rooms_changed |= session
+        result = super().write(vals)
+        for session in rooms_changed:
+            session._send_room_reallocation_email()
+        return result
+
+    def _send_room_reallocation_email(self):
+        self.ensure_one()
+        template = self.env.ref(
+            'institute_management.mail_template_room_reallocation', raise_if_not_found=False)
+        if not template:
+            return
+        recipients = []
+        if self.teacher_id.work_email:
+            recipients.append(self.teacher_id.work_email)
+        recipients += [p.email for p in self.batch_id.student_ids if p.email]
+        if not recipients:
+            return
+        template.send_mail(
+            self.id,
+            email_values={'email_to': ','.join(recipients)},
+            force_send=True,
+        )
 
     def action_acknowledge(self):
         for session in self:
@@ -52,14 +81,14 @@ class InstituteClassSession(models.Model):
                 'state': 'needs_substitute',
                 'original_teacher_id': session.teacher_id.id,
             })
-            
+
     def action_mark_completed(self):
         for session in self:
             if session.state != 'scheduled':
                 raise ValidationError(
                     "Only a scheduled session can be marked as completed."
                 )
-            session.write({'state': 'completed'})        
+            session.write({'state': 'completed'})
 
     def action_open_substitute_wizard(self):
         self.ensure_one()
@@ -84,12 +113,12 @@ class InstituteClassSession(models.Model):
             self.end_datetime,
             exclude_teacher_id=exclude_id,
         )
-        
+
     @api.depends('state')
     def _compute_is_history(self):
         for session in self:
             session.is_history = session.state in ('completed', 'substituted')
-                
+
     @api.constrains('teacher_id', 'start_datetime', 'end_datetime', 'state')
     def _check_teacher_overlap(self):
         for session in self:
@@ -134,7 +163,7 @@ class InstituteClassSession(models.Model):
                     f"Teacher {session.teacher_id.name} is not qualified to teach "
                     f"{session.subject_id.name}."
                 )
-                         
+
     def action_log_syllabus(self):
         self.ensure_one()
         return {
@@ -146,4 +175,5 @@ class InstituteClassSession(models.Model):
             'context': {
                 'default_session_id': self.id,
             },
-        }           
+        }
+        
