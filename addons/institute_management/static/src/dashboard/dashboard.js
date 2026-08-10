@@ -124,6 +124,16 @@ export class InstituteDashboard extends Component {
         });
     }
 
+    openExtensionRequest(requestId) {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: "institute.syllabus.extension.request",
+            res_id: requestId,
+            views: [[false, "form"]],
+            target: "current",
+        });
+    }
+
     openScheduleClass() {
         this.action.doAction({
             type: "ir.actions.act_window",

@@ -46,7 +46,7 @@
                 <div class="card shadow-sm">
                     <div class="card-header fw-bold">⚠ Action Required</div>
                     <ul class="list-group list-group-flush">
-                        <li t-if="!state.data.pending_sos.length and !state.data.lagging_batches.length and !state.data.unlogged_syllabus.length"
+                        <li t-if="!state.data.pending_sos.length and !state.data.lagging_batches.length and !state.data.unlogged_syllabus.length and !state.data.pending_extensions.length"
                             class="list-group-item text-muted">
                             Nothing needs attention right now.
                         </li>
@@ -80,6 +80,16 @@
                             <br/>
                             <span class="text-muted" t-esc="log.start_datetime"/>
                             <span class="text-muted"> · Syllabus not logged</span>
+                        </li>
+
+                        <li t-foreach="state.data.pending_extensions" t-as="ext" t-key="ext.id"
+                            class="list-group-item o_institute_dashboard_item"
+                            t-on-click="() => this.openExtensionRequest(ext.id)">
+                            <span class="me-2">📝</span>
+                            <strong t-esc="ext.teacher_name"/> requests <t t-esc="ext.extra_classes"/> extra class(es)
+                            for <span t-esc="ext.topic_name"/> (<t t-esc="ext.batch_name"/>)
+                            <br/>
+                            <span class="text-muted">Pending approval</span>
                         </li>
                     </ul>
                 </div>

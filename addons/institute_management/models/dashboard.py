@@ -66,6 +66,17 @@ class InstituteDashboard(models.AbstractModel):
             'start_datetime': fields.Datetime.to_string(s.start_datetime),
         } for s in unlogged_syllabus_sessions]
 
+        pending_extension_requests = self.env['institute.syllabus.extension.request'].search([
+            ('state', '=', 'draft'),
+        ], order='requested_date')
+        pending_extensions = [{
+            'id': r.id,
+            'teacher_name': r.teacher_id.name,
+            'batch_name': r.batch_id.name,
+            'topic_name': r.topic_id.name,
+            'extra_classes': r.extra_classes,
+        } for r in pending_extension_requests]
+
         lagging = Batch.search([('lagging_flag', '=', True)])
         lagging_batches = [{
             'id': b.id,
@@ -102,6 +113,8 @@ class InstituteDashboard(models.AbstractModel):
             'pending_sos': pending_sos,
             'unlogged_syllabus_count': len(unlogged_syllabus),
             'unlogged_syllabus': unlogged_syllabus,
+            'pending_extensions_count': len(pending_extensions),
+            'pending_extensions': pending_extensions,
             'lagging_batches': lagging_batches,
             'syllabus_progress': syllabus_progress,
             'teacher_workload': teacher_workload,
