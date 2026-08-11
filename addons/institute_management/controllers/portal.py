@@ -138,6 +138,13 @@ class InstituteTeacherPortal(http.Controller):
                         'date_from': start_utc,
                         'date_to': end_utc,
                     })
+                    conflicting_sessions = request.env['institute.class.session'].sudo().search([
+                        ('teacher_id', '=', employee.id),
+                        ('state', '=', 'scheduled'),
+                        ('start_datetime', '<', end_utc),
+                        ('end_datetime', '>', start_utc),
+                    ])
+                    conflicting_sessions.action_mark_unavailable()
             except Exception:
                 _logger.exception("Failed to create availability leave from portal form")
         return request.redirect('/my/availability')
