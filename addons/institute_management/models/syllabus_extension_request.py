@@ -24,11 +24,23 @@ class InstituteSyllabusExtensionRequest(models.Model):
     requested_date = fields.Datetime(default=fields.Datetime.now, readonly=True)
 
     def action_approve(self):
-        for req in self:
-            if req.state != 'draft':
-                raise ValidationError("Only a pending request can be approved.")
-            req.write({'state': 'approved'})
-            req._send_approval_email()
+        self.ensure_one()
+        if self.state != 'draft':
+            raise ValidationError("Only a pending request can be approved.")
+        self.write({'state': 'approved'})
+        self._send_approval_email()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Schedule Extra Class',
+            'res_model': 'institute.class.session',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_teacher_id': self.teacher_id.id,
+                'default_batch_id': self.batch_id.id,
+                'default_topic_id': self.topic_id.id,
+            },
+        }
 
     def action_reject(self):
         for req in self:
