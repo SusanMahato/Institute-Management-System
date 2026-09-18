@@ -6,3 +6,4 @@ from . import class_session
 from . import syllabus
 from . import syllabus_extension_request
 from . import dashboard
+from . import pending_queue

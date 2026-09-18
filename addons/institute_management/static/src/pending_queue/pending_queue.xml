@@ -1,0 +1,46 @@
+﻿<templates xml:space="preserve">
+    <t t-name="institute_management.PendingQueue">
+        <div class="o_institute_pending_queue p-4">
+            <h2 class="mb-4">Pending Queue</h2>
+
+            <div t-if="state.loading" class="text-muted">Loading pending queue...</div>
+
+            <div t-else="">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header fw-bold">Unallocated Syllabus Topics</div>
+                    <ul class="list-group list-group-flush">
+                        <li t-if="!state.data.unallocated_topics.length"
+                            class="list-group-item text-muted">
+                            No unallocated topics.
+                        </li>
+                        <li t-foreach="state.data.unallocated_topics" t-as="topic" t-key="topic.id"
+                            class="list-group-item o_institute_dashboard_item"
+                            t-on-click="() => this.openTopic(topic.id)">
+                            <strong t-esc="topic.name"/> - <span t-esc="topic.chapter_name"/>
+                            <br/>
+                            <span class="text-muted">
+                                Standard classes needed: <t t-esc="topic.standard_class_count"/>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header fw-bold">Pending Extension Requests</div>
+                    <ul class="list-group list-group-flush">
+                        <li t-if="!state.data.pending_extensions.length"
+                            class="list-group-item text-muted">
+                            No pending extension requests.
+                        </li>
+                        <li t-foreach="state.data.pending_extensions" t-as="ext" t-key="ext.id"
+                            class="list-group-item o_institute_dashboard_item"
+                            t-on-click="() => this.openExtensionRequest(ext.id)">
+                            <strong t-esc="ext.teacher_name"/> requests <t t-esc="ext.extra_classes"/> extra class(es)
+                            for <span t-esc="ext.topic_name"/> (<t t-esc="ext.batch_name"/>)
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

@@ -33,11 +33,14 @@ teachers, and students.
         'data/cron.xml',
         'wizard/substitute_teacher_wizard_views.xml',
     ],
-    'assets': {
+        'assets': {
         'web.assets_backend': [
             'institute_management/static/src/dashboard/dashboard.js',
             'institute_management/static/src/dashboard/dashboard.xml',
             'institute_management/static/src/dashboard/dashboard.scss',
+                        'institute_management/static/src/pending_queue/pending_queue.js',
+            'institute_management/static/src/pending_queue/pending_queue.xml',
+            'institute_management/static/src/pending_queue/pending_queue.scss',
         ],
     },
     'demo': [

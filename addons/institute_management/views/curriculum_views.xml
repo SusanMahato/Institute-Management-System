@@ -149,7 +149,7 @@
     <menuitem id="menu_institute_chapter" name="Chapters" parent="menu_institute_curriculum" action="action_institute_chapter"/>
     <menuitem id="menu_institute_topic" name="Topics" parent="menu_institute_curriculum" action="action_institute_topic"/>
 
-    <record id="view_institute_topic_pending_list" model="ir.ui.view">
+       <record id="view_institute_topic_pending_list" model="ir.ui.view">
         <field name="name">institute.topic.pending.list</field>
         <field name="model">institute.topic</field>
         <field name="arch" type="xml">
@@ -162,13 +162,10 @@
         </field>
     </record>
 
-    <record id="action_institute_pending_queue" model="ir.actions.act_window">
+        <record id="action_institute_pending_queue_v2" model="ir.actions.client">
         <field name="name">Pending Queue</field>
-        <field name="res_model">institute.topic</field>
-        <field name="view_mode">list</field>
-        <field name="view_id" ref="view_institute_topic_pending_list"/>
-        <field name="domain">[('session_count', '=', 0)]</field>
+        <field name="tag">institute_management.pending_queue</field>
     </record>
 
-    <menuitem id="menu_institute_pending_queue" name="Pending Queue" parent="menu_institute_scheduling" action="action_institute_pending_queue" sequence="5"/>
+    <menuitem id="menu_institute_pending_queue" name="Pending Queue" parent="menu_institute_scheduling" action="action_institute_pending_queue_v2" sequence="5"/>
 </odoo>
