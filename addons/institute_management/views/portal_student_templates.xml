@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
     <template id="portal_student_not_linked" name="Student Portal - Not Linked">
@@ -22,6 +23,33 @@
                     · Progress: <t t-esc="round(batch.batch_completion_percent, 1)"/>%
                 </p>
 
+                <!-- My Syllabus Section -->
+                <h4 class="mt-4">My Syllabus</h4>
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6 class="text-success">✓ Completed</h6>
+                        <ul class="list-unstyled" t-if="completed_topics">
+                            <li t-foreach="completed_topics" t-as="topic" t-key="topic.id" t-esc="topic.name"/>
+                        </ul>
+                        <p t-else="" class="text-muted small">None yet.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-warning">⏳ Currently Being Taught</h6>
+                        <ul class="list-unstyled" t-if="current_topics">
+                            <li t-foreach="current_topics" t-as="topic" t-key="topic.id" t-esc="topic.name"/>
+                        </ul>
+                        <p t-else="" class="text-muted small">None right now.</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-muted">○ Remaining</h6>
+                        <ul class="list-unstyled" t-if="remaining_topics">
+                            <li t-foreach="remaining_topics" t-as="topic" t-key="topic.id" t-esc="topic.name"/>
+                        </ul>
+                        <p t-else="" class="text-muted small">All caught up!</p>
+                    </div>
+                </div>
+
+                <!-- Upcoming & Active Classes -->
                 <h4 class="mt-4">Upcoming &amp; Active Classes</h4>
                 <table class="table table-hover" t-if="upcoming_sessions">
                     <thead>
@@ -52,6 +80,7 @@
                 </table>
                 <p t-else="" class="text-muted">No upcoming classes.</p>
 
+                <!-- Recent History -->
                 <h4 class="mt-4">Recent History</h4>
                 <table class="table table-sm" t-if="history_sessions">
                     <thead>

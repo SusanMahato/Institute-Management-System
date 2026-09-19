@@ -14,6 +14,14 @@ class InstituteStudentPortal(http.Controller):
     linked via institute.batch's student_ids Many2many -- assumed to
     belong to exactly one batch."""
 
+    def _get_current_student_batch(self):
+        partner = request.env.user.partner_id
+        if not partner:
+            return False
+        return request.env['institute.batch'].sudo().search([
+            ('student_ids', 'in', partner.id),
+        ], limit=1)
+
     def _to_local_str(self, dt):
         if not dt:
             return ''
@@ -23,10 +31,7 @@ class InstituteStudentPortal(http.Controller):
 
     @http.route(['/my/batch'], type='http', auth='user', website=True)
     def student_batch(self, **kwargs):
-        partner = request.env.user.partner_id
-        Batch = request.env['institute.batch'].sudo()
-        batch = Batch.search([('student_ids', 'in', partner.id)], limit=1)
-
+        batch = self._get_current_student_batch()
         if not batch:
             return request.render('institute_management.portal_student_not_linked', {})
 
@@ -41,11 +46,18 @@ class InstituteStudentPortal(http.Controller):
             ('is_history', '=', True),
         ], order='start_datetime desc', limit=20)
 
+        topics = batch._get_course_topics()
+        completed_topics = topics.filtered(lambda t: t.completion_percent >= 100)
+        current_topics = topics.filtered(lambda t: 0 < t.completion_percent < 100)
+        remaining_topics = topics.filtered(lambda t: t.completion_percent == 0)
+
         return request.render('institute_management.portal_student_batch', {
             'batch': batch,
             'upcoming_sessions': upcoming_sessions,
             'history_sessions': history_sessions,
+            'completed_topics': completed_topics,
+            'current_topics': current_topics,
+            'remaining_topics': remaining_topics,
             'today': fields.Date.context_today(request.env.user),
             'to_local': self._to_local_str,
         })
-        
