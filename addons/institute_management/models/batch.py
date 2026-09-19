@@ -1,5 +1,5 @@
-from odoo import models, fields, api
 from datetime import timedelta
+from odoo import api, fields, models
 
 
 class InstituteBatch(models.Model):
@@ -56,4 +56,34 @@ class InstituteBatch(models.Model):
                     email_values={'email_to': ','.join(coordinator_emails)},
                     force_send=True,
                 )
-                
+
+    def action_publish_routine(self):
+        self.ensure_one()
+        Session = self.env['institute.class.session']
+        today = fields.Date.context_today(self)
+        next_week = today + timedelta(days=7)
+        upcoming_sessions = Session.search([
+            ('batch_id', '=', self.id),
+            ('state', 'in', ['scheduled', 'substituted']),
+            ('start_datetime', '>=', today.strftime('%Y-%m-%d 00:00:00')),
+            ('start_datetime', '<=', next_week.strftime('%Y-%m-%d 23:59:59')),
+        ], order='start_datetime')
+
+        if not upcoming_sessions or not self.student_ids:
+            return
+
+        template = self.env.ref(
+            'institute_management.mail_template_routine_published', raise_if_not_found=False)
+        if not template:
+            return
+
+        recipients = [p.email for p in self.student_ids if p.email]
+        if not recipients:
+            return
+
+        template.send_mail(
+            self.id,
+            email_values={'email_to': ','.join(recipients)},
+            force_send=True,
+        )
+        

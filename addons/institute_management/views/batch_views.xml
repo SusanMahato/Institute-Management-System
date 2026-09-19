@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
     <record id="view_institute_batch_list" model="ir.ui.view">
         <field name="name">institute.batch.list</field>
         <field name="model">institute.batch</field>
@@ -18,6 +20,10 @@
         <field name="model">institute.batch</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_publish_routine" type="object"
+                            string="Publish This Week's Routine" class="btn-primary"/>
+                </header>
                 <sheet>
                     <group>
                         <field name="name"/>
@@ -52,4 +58,5 @@
 
     <menuitem id="menu_institute_batch" name="Batches" parent="menu_institute_curriculum" action="action_institute_batch"/>
     <menuitem id="menu_institute_progress_tracker" name="Master Progress Tracker" parent="menu_institute_syllabus" action="action_institute_progress_tracker" sequence="10"/>
+
 </odoo>

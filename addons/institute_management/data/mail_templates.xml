@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
     <record id="mail_template_substitute_assignment" model="mail.template">
@@ -75,6 +76,23 @@
                 <li><strong>New Room:</strong> <t t-out="object.room_id.name or ''"/></li>
             </ul>
             <p>Please proceed to the new room.</p>
+            ]]>
+        </field>
+    </record>
+
+    <record id="mail_template_routine_published" model="mail.template">
+        <field name="name">Routine Published</field>
+        <field name="model_id" ref="model_institute_batch"/>
+        <field name="subject">Next week's routine is now available - {{ object.name }}</field>
+        <field name="auto_delete" eval="True"/>
+        <field name="body_html">
+            <![CDATA[
+            <p>Hi,</p>
+            <p>
+                Next week's class routine for <strong><t t-out="object.name or ''"/></strong>
+                is now available.
+            </p>
+            <p>Please check the portal for your updated schedule.</p>
             ]]>
         </field>
     </record>
