@@ -51,6 +51,7 @@
                         <field name="acknowledged" invisible="state != 'substituted'"/>
                         <field name="acknowledged_by_id" invisible="not acknowledged"/>
                         <field name="acknowledged_at" invisible="not acknowledged"/>
+                        <field name="viewed_at" invisible="not viewed_at" readonly="1"/>
                     </group>
                 </sheet>
                 <chatter/>

@@ -31,6 +31,7 @@ class InstituteClassSession(models.Model):
     acknowledged = fields.Boolean(default=False, readonly=True)
     acknowledged_by_id = fields.Many2one('hr.employee', readonly=True, string='Acknowledged By')
     acknowledged_at = fields.Datetime(readonly=True)
+    viewed_at = fields.Datetime(readonly=True, string='First Viewed At')
 
     is_history = fields.Boolean(compute='_compute_is_history', store=True)
 

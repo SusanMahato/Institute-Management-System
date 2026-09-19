@@ -45,6 +45,9 @@ class InstituteTeacherPortal(http.Controller):
             ('state', '=', 'substituted'),
             ('acknowledged', '=', False),
         ], order='start_datetime asc')
+        unviewed = needs_acknowledgment.filtered(lambda s: not s.viewed_at)
+        if unviewed:
+            unviewed.write({'viewed_at': fields.Datetime.now()})
         upcoming_sessions = Session.search([
             ('teacher_id', '=', employee.id),
             ('state', '!=', 'cancelled'),
