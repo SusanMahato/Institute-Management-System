@@ -59,6 +59,7 @@
                             <th>Teacher</th>
                             <th>Room</th>
                             <th>Status</th>
+                            <th>Join</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -74,6 +75,10 @@
                             <td t-esc="session.room_id.name"/>
                             <td>
                                 <span t-esc="session.state"/>
+                            </td>
+                            <td>
+                                <a t-if="session.is_joinable_now" t-att-href="session.room_id.meeting_link"
+                                   target="_blank" class="btn btn-sm btn-success">Join Live</a>
                             </td>
                         </tr>
                     </tbody>

@@ -1,3 +1,4 @@
+from datetime import timedelta
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
@@ -34,6 +35,19 @@ class InstituteClassSession(models.Model):
     viewed_at = fields.Datetime(readonly=True, string='First Viewed At')
 
     is_history = fields.Boolean(compute='_compute_is_history', store=True)
+    is_joinable_now = fields.Boolean(compute='_compute_is_joinable_now', string='Joinable Now')
+
+    @api.depends('room_id.is_virtual', 'room_id.meeting_link', 'start_datetime', 'end_datetime')
+    def _compute_is_joinable_now(self):
+        now = fields.Datetime.now()
+        for session in self:
+            if not session.room_id.is_virtual or not session.room_id.meeting_link:
+                session.is_joinable_now = False
+                continue
+            
+            # Allow joining 10 minutes prior to start time up until end time
+            join_opens_at = session.start_datetime - timedelta(minutes=10)
+            session.is_joinable_now = join_opens_at <= now <= session.end_datetime
 
     def write(self, vals):
         rooms_changed = self.env['institute.class.session']
