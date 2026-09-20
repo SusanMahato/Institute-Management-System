@@ -19,9 +19,30 @@
                 <h2>My Timetable</h2>
                 <p class="text-muted">Welcome, <t t-esc="employee.name"/></p>
 
-                <!-- Needs Acknowledgment: independent of upcoming/history bucketing,
-                     since a substituted session counts as "history" immediately
-                     regardless of its actual date. -->
+                <!-- Monthly earnings summary, shown only if a rate is configured -->
+                <div class="row mb-4" t-if="employee.rate_per_hour">
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card bg-light shadow-sm">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Hours Taught (This Month)</h6>
+                                <h3 class="card-title text-primary mb-0" t-esc="'%.1f' % completed_hours_this_month"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="card bg-light shadow-sm">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">Estimated Earnings (This Month)</h6>
+                                <h3 class="card-title text-success mb-0">
+                                    <t t-esc="estimated_earnings" t-options="{'widget': 'monetary', 'display_currency': employee.company_id.currency_id}"/>
+                                </h3>
+                                <p class="text-muted small fst-italic mb-0">(estimate only, not a payroll record)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Needs Acknowledgment -->
                 <div t-if="needs_acknowledgment" class="mb-4">
                     <h4 class="text-warning">⚠ Needs Your Acknowledgment</h4>
                     <div t-foreach="needs_acknowledgment" t-as="session"

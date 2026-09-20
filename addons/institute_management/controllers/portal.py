@@ -1,9 +1,9 @@
-import logging
 from datetime import datetime
+import logging
 
 import pytz
 
-from odoo import http, fields
+from odoo import fields, http
 from odoo.http import request
 
 _logger = logging.getLogger(__name__)
@@ -71,12 +71,17 @@ class InstituteTeacherPortal(http.Controller):
             ]).mapped('session_id').ids
             unlogged_syllabus = completed_sessions.filtered(lambda s: s.id not in logged_session_ids)
 
+        completed_hours_this_month = employee._completed_hours_this_month()
+        estimated_earnings = completed_hours_this_month * employee.rate_per_hour
+
         return request.render('institute_management.portal_teacher_timetable', {
             'employee': employee,
             'needs_acknowledgment': needs_acknowledgment,
             'upcoming_sessions': upcoming_sessions,
             'history_sessions': history_sessions,
             'unlogged_syllabus': unlogged_syllabus,
+                        'completed_hours_this_month': completed_hours_this_month,
+            'estimated_earnings': estimated_earnings,
             'today': fields.Date.context_today(request.env.user),
             'to_local': self._to_local_str,
         })

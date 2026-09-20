@@ -10,6 +10,7 @@
                         <field name="subject_ids" widget="many2many_tags"/>
                         <field name="preferred_mode"/>
                         <field name="maximum_weekly_workload"/>
+                        <field name="rate_per_hour"/>
                     </group>
                 </page>
             </xpath>

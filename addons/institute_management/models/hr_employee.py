@@ -1,4 +1,4 @@
-from odoo import models, fields, api
+from odoo import api, fields, models
 
 
 class HrEmployee(models.Model):
@@ -14,18 +14,22 @@ class HrEmployee(models.Model):
         string='Maximum Weekly Workload', default=20,
         help='Maximum number of class sessions this teacher can be assigned per week'
     )
+    rate_per_hour = fields.Float(
+        string='Rate Per Hour', default=0.0,
+        help='Estimated pay per hour taught, for visibility only -- not a payroll record.'
+    )
 
     def is_available(self, start_dt, end_dt):
-     self.ensure_one()
-     if not self.resource_id:
-        return True
-     Leaves = self.env['resource.calendar.leaves'].sudo()
-     conflicting_leaves = Leaves.search([
-        ('resource_id', '=', self.resource_id.id),
-        ('date_from', '<', end_dt),
-        ('date_to', '>', start_dt),
-    ], limit=1)
-     return not conflicting_leaves
+        self.ensure_one()
+        if not self.resource_id:
+            return True
+        Leaves = self.env['resource.calendar.leaves'].sudo()
+        conflicting_leaves = Leaves.search([
+            ('resource_id', '=', self.resource_id.id),
+            ('date_from', '<', end_dt),
+            ('date_to', '>', start_dt),
+        ], limit=1)
+        return not conflicting_leaves
 
     def _current_weekly_workload(self):
         """Count this teacher's active sessions (used as a workload ranking signal)."""
@@ -35,6 +39,22 @@ class HrEmployee(models.Model):
             ('teacher_id', '=', self.id),
             ('state', 'not in', ['cancelled']),
         ])
+
+    def _completed_hours_this_month(self):
+        self.ensure_one()
+        Session = self.env['institute.class.session']
+        today = fields.Date.context_today(self)
+        month_start = today.replace(day=1)
+        sessions = Session.search([
+            ('teacher_id', '=', self.id),
+            ('state', '=', 'completed'),
+            ('start_datetime', '>=', month_start.strftime('%Y-%m-%d 00:00:00')),
+        ])
+        total_hours = sum(
+            (s.end_datetime - s.start_datetime).total_seconds() / 3600.0
+            for s in sessions
+        )
+        return total_hours
 
     def _sessions_today_count(self):
         """Count this teacher's active sessions scheduled for today."""
