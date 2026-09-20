@@ -37,6 +37,11 @@ class InstituteClassSession(models.Model):
     is_history = fields.Boolean(compute='_compute_is_history', store=True)
     is_joinable_now = fields.Boolean(compute='_compute_is_joinable_now', string='Joinable Now')
 
+    teacher_suggestion_source = fields.Selection([
+        ('auto', 'Automatic'),
+        ('manual', 'Manual'),
+    ], default='manual', readonly=True)
+
     @api.depends('room_id.is_virtual', 'room_id.meeting_link', 'start_datetime', 'end_datetime')
     def _compute_is_joinable_now(self):
         now = fields.Datetime.now()
@@ -178,6 +183,41 @@ class InstituteClassSession(models.Model):
                     f"Teacher {session.teacher_id.name} is not qualified to teach "
                     f"{session.subject_id.name}."
                 )
+
+    @api.onchange('topic_id')
+    def _onchange_topic_id_suggest_teacher(self):
+        if not self.topic_id or not self.subject_id:
+            return
+        if self.teacher_id and self.teacher_suggestion_source == 'manual':
+            return
+        candidates = self.env['hr.employee'].find_available_substitutes(
+            self.subject_id.id,
+            self.start_datetime or fields.Datetime.now(),
+            self.end_datetime or fields.Datetime.now(),
+        )
+        if candidates:
+            self.teacher_id = candidates[0]
+            self.teacher_suggestion_source = 'auto'
+            return {
+                'warning': {
+                    'title': 'Suggested Teacher',
+                    'message': f"Suggested: {candidates[0].name} (based on availability and workload). You can change this if needed.",
+                }
+            }
+        else:
+            self.teacher_id = False
+            self.teacher_suggestion_source = 'auto'
+            return {
+                'warning': {
+                    'title': 'No Suitable Teacher Found',
+                    'message': "No qualified, available teacher was found for this topic. Please assign one manually.",
+                }
+            }
+
+    @api.onchange('teacher_id')
+    def _onchange_teacher_id_mark_manual(self):
+        if self.teacher_id:
+            self.teacher_suggestion_source = 'manual'
 
     def action_log_syllabus(self):
         self.ensure_one()
