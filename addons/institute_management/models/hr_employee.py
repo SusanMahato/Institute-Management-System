@@ -69,9 +69,11 @@ class HrEmployee(models.Model):
         ])
 
     @api.model
-    def find_available_substitutes(self, subject_id, start_dt, end_dt, exclude_teacher_id=None):
+    def find_available_substitutes(self, subject_id, start_dt, end_dt, exclude_teacher_id=None, room_id=None):
         """Filter: qualified for the subject, available (no leave conflict),
-        not already assigned to an overlapping session.
+        not already assigned to an overlapping session, and matches the
+        session's mode (on-site teachers for physical rooms, online-capable
+        teachers for virtual rooms; 'both' always qualifies).
         Rank: lowest current workload, then fewest sessions today,
         then alphabetical as a final tie-breaker."""
         domain = [('subject_ids', 'in', [subject_id])]
@@ -79,9 +81,18 @@ class HrEmployee(models.Model):
             domain.append(('id', '!=', exclude_teacher_id))
         candidates = self.search(domain)
 
+        is_virtual_room = False
+        if room_id:
+            room = self.env['institute.room'].browse(room_id)
+            is_virtual_room = room.is_virtual
+
         Session = self.env['institute.class.session']
         qualified_available = self.browse()
         for teacher in candidates:
+            if teacher.preferred_mode == 'online' and not is_virtual_room:
+                continue
+            if teacher.preferred_mode == 'on_site' and is_virtual_room:
+                continue
             if not teacher.is_available(start_dt, end_dt):
                 continue
             overlapping = Session.search_count([

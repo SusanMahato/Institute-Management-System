@@ -132,6 +132,7 @@ class InstituteClassSession(models.Model):
             self.start_datetime,
             self.end_datetime,
             exclude_teacher_id=exclude_id,
+            room_id=self.room_id.id,
         )
 
     @api.depends('state')
@@ -194,6 +195,7 @@ class InstituteClassSession(models.Model):
             self.subject_id.id,
             self.start_datetime or fields.Datetime.now(),
             self.end_datetime or fields.Datetime.now(),
+            room_id=self.room_id.id if self.room_id else None,
         )
         if candidates:
             self.teacher_id = candidates[0]
