@@ -49,7 +49,7 @@ class InstituteClassSession(models.Model):
             if not session.room_id.is_virtual or not session.room_id.meeting_link:
                 session.is_joinable_now = False
                 continue
-            
+
             # Allow joining 10 minutes prior to start time up until end time
             join_opens_at = session.start_datetime - timedelta(minutes=10)
             session.is_joinable_now = join_opens_at <= now <= session.end_datetime
@@ -213,6 +213,21 @@ class InstituteClassSession(models.Model):
                     'message': "No qualified, available teacher was found for this topic. Please assign one manually.",
                 }
             }
+
+    @api.onchange('topic_id')
+    def _onchange_topic_id_check_standard_count(self):
+        if self.topic_id and self.topic_id.standard_class_count:
+            if self.topic_id.session_count >= self.topic_id.standard_class_count:
+                return {
+                    'warning': {
+                        'title': 'Topic Already at Planned Class Count',
+                        'message': (
+                            f"'{self.topic_id.name}' has already reached its planned "
+                            f"{self.topic_id.standard_class_count} class(es). "
+                            f"Scheduling another is allowed but may indicate falling behind schedule."
+                        ),
+                    }
+                }
 
     @api.onchange('teacher_id')
     def _onchange_teacher_id_mark_manual(self):
