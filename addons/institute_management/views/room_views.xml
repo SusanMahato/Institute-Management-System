@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <record id="view_institute_room_list" model="ir.ui.view">
         <field name="name">institute.room.list</field>
@@ -8,6 +9,7 @@
                 <field name="building"/>
                 <field name="floor"/>
                 <field name="capacity"/>
+                <field name="resources"/>
                 <field name="is_virtual"/>
             </list>
         </field>
@@ -24,6 +26,7 @@
                         <field name="building"/>
                         <field name="floor"/>
                         <field name="capacity"/>
+                        <field name="resources"/>
                         <field name="is_virtual"/>
                         <field name="meeting_link" invisible="not is_virtual"/>
                     </group>

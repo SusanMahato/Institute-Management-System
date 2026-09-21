@@ -9,6 +9,8 @@ class InstituteRoom(models.Model):
     building = fields.Char()
     floor = fields.Char()
     capacity = fields.Integer(default=0)
+    resources = fields.Char(string='Resources',
+        help='e.g. Projector, Whiteboard, Speakers')
     active = fields.Boolean(default=True)
     is_virtual = fields.Boolean(string='Virtual Room', default=False)
     meeting_link = fields.Char(string='Meeting Link')
